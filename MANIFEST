@@ -1,0 +1,16 @@
+README
+Makefile.PL
+Webdav.pm
+Webdav.pod
+Webdav.html
+Webdav.xs
+MANIFEST
+typemap
+eg/get.pl
+eg/put.pl
+eg/delete.pl
+eg/propfind.pl
+eg/proppatch.pl
+eg/showheader.pl
+eg/copy.pl
+Webdav/Constants.pm

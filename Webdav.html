@@ -1,0 +1,4503 @@
+<HTML>
+<HEAD>
+<TITLE>Net::Webdav - Perl interface to Neon HTTP and WebDAV client library</TITLE>
+<LINK REV="made" HREF="mailto:root@venus.gr.ecos.de">
+</HEAD>
+
+<BODY>
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#DESCRIPTION">DESCRIPTION</A>
+	<LI><A HREF="#CALLBACKS">CALLBACKS</A>
+	<LI><A HREF="#C_DATASTRUCTURS">C-DATASTRUCTURS</A>
+	<LI><A HREF="#Functions">Functions</A>
+	<LI><A HREF="#Methods_of_Net_Webdav">Methods of Net::Webdav</A>
+	<UL>
+
+		<LI><A HREF="#_session_add_hooks_hooks_fre">$session -&gt; add_hooks (hooks,free_cookie)</A>
+		<LI><A HREF="#int_session_dav_copy_over">int = $session -&gt; dav_copy (overwrite,src,dest)</A>
+		<LI><A HREF="#int_session_dav_delete_ur">int = $session -&gt; dav_delete (uri)</A>
+		<LI><A HREF="#int_session_dav_lock_dav">int = $session -&gt; dav_lock ($davlock)</A>
+		<LI><A HREF="#int_session_dav_lock_disco">int = $session -&gt; dav_lock_discover (uri,result)</A>
+		<LI><A HREF="#_davlocksession_session_da">$davlocksession = $session -&gt; dav_lock_register ()</A>
+		<LI><A HREF="#int_session_dav_mkcol_uri">int = $session -&gt; dav_mkcol (uri)</A>
+		<LI><A HREF="#int_session_dav_move_over">int = $session -&gt; dav_move (overwrite,src,dest)</A>
+		<LI><A HREF="#_propfind_session_dav_prop">$propfind = $session -&gt; dav_propfind_create (uri,depth)</A>
+		<LI><A HREF="#int_session_dav_propnames_">int = $session -&gt; dav_propnames (href,depth,results)</A>
+		<LI><A HREF="#int_session_dav_proppatch_">int = $session -&gt; dav_proppatch (uri,items)</A>
+		<LI><A HREF="#int_session_dav_simple_pro">int = $session -&gt; dav_simple_propfind (uri,depth,props,results)</A>
+		<LI><A HREF="#int_session_dav_simple_req">int = $session -&gt; dav_simple_request ($request)</A>
+		<LI><A HREF="#int_session_dav_unlock_d">int = $session -&gt; dav_unlock ($davlock)</A>
+		<LI><A HREF="#_session_decide_proxy_use_pr">$session -&gt; decide_proxy (use_proxy)</A>
+		<LI><A HREF="#int_session_destroy_">int = $session -&gt; destroy ()</A>
+		<LI><A HREF="#_session_forget_auth_">$session -&gt; forget_auth ()</A>
+		<LI><A HREF="#int_session_get_uri_f_">int = $session -&gt; get (uri,f)</A>
+		<LI><A HREF="#const_char_session_get_e">const char * = $session -&gt; get_error ()</A>
+		<LI><A HREF="#int_session_get_range_uri">int = $session -&gt; get_range (uri,range,f)</A>
+		<LI><A HREF="#const_char_session_get_s">const char * = $session -&gt; get_scheme ()</A>
+		<LI><A HREF="#const_char_session_get_s">const char * = $session -&gt; get_server_hostport ()</A>
+		<LI><A HREF="#int_session_getmodtime_ur">int = $session -&gt; getmodtime (uri,modtime)</A>
+		<LI><A HREF="#void_session_hook_privat">void * = $session -&gt; hook_private (id)</A>
+		<LI><A HREF="#int_session_options_uri_c">int = $session -&gt; options (uri,caps)</A>
+		<LI><A HREF="#int_session_post_uri_f_bu">int = $session -&gt; post (uri,f,buffer)</A>
+		<LI><A HREF="#int_session_proxy_hostnam">int = $session -&gt; proxy (hostname,port)</A>
+		<LI><A HREF="#int_session_put_uri_f_">int = $session -&gt; put (uri,f)</A>
+		<LI><A HREF="#int_session_put_if_unmodif">int = $session -&gt; put_if_unmodified (uri,stream,modtime)</A>
+		<LI><A HREF="#int_session_read_file_uri">int = $session -&gt; read_file (uri,reader)</A>
+		<LI><A HREF="#const_char_session_redir">const char * = $session -&gt; redirect_location ()</A>
+		<LI><A HREF="#_session_redirect_register_c">$session -&gt; redirect_register (confirm,notify)</A>
+		<LI><A HREF="#_request_session_request_c">$request = $session -&gt; request_create (method,uri)</A>
+		<LI><A HREF="#int_session_server_hostna">int = $session -&gt; server (hostname,port)</A>
+		<LI><A HREF="#int_session_set_accept_sec">int = $session -&gt; set_accept_secure_upgrade (acc_upgrade)</A>
+		<LI><A HREF="#_session_set_error_errstring">$session -&gt; set_error (errstring)</A>
+		<LI><A HREF="#_session_set_expect100_use_e">$session -&gt; set_expect100 (use_expect100)</A>
+		<LI><A HREF="#_session_set_persist_persist">$session -&gt; set_persist (persist)</A>
+		<LI><A HREF="#_session_set_progress_progre">$session -&gt; set_progress (progress)</A>
+		<LI><A HREF="#_session_set_proxy_auth_call">$session -&gt; set_proxy_auth (callback)</A>
+		<LI><A HREF="#int_session_set_request_se">int = $session -&gt; set_request_secure_upgrade (req_upgrade)</A>
+		<LI><A HREF="#int_session_set_secure_se">int = $session -&gt; set_secure (secure)</A>
+		<LI><A HREF="#_session_set_secure_context_">$session -&gt; set_secure_context ($ssl)</A>
+		<LI><A HREF="#_session_set_server_auth_cal">$session -&gt; set_server_auth (callback)</A>
+		<LI><A HREF="#_session_set_status_status_">$session -&gt; set_status (status)</A>
+		<LI><A HREF="#_session_set_useragent_produ">$session -&gt; set_useragent (product)</A>
+		<LI><A HREF="#int_session_version_pre_ht">int = $session -&gt; version_pre_http11 ()</A>
+	</UL>
+
+	<LI><A HREF="#Methods_of_Net_Webdav_Hip">Methods of Net::Webdav::Hip</A>
+	<UL>
+
+		<LI><A HREF="#_multstatus_hip_dav_207_cr">$multstatus = $hip -&gt; dav_207_create ()</A>
+		<LI><A HREF="#int_hip_xml_currentline_">int = $hip -&gt; xml_currentline ()</A>
+		<LI><A HREF="#_hip_xml_destroy_">$hip -&gt; xml_destroy ()</A>
+		<LI><A HREF="#const_char_hip_xml_get_e">const char * = $hip -&gt; xml_get_error ()</A>
+		<LI><A HREF="#_hip_xml_parse_block_len_">$hip -&gt; xml_parse (block,len)</A>
+		<LI><A HREF="#_hip_xml_push_handler_elemen">$hip -&gt; xml_push_handler (elements,validate_cb,startelm_cb,endelm_cb)</A>
+		<LI><A HREF="#_hip_xml_push_mixed_handler_">$hip -&gt; xml_push_mixed_handler (elements,validate_cb,startelm_cb,cdata_cb,endelm_cb)</A>
+		<LI><A HREF="#_hip_xml_set_error_msg_">$hip -&gt; xml_set_error (msg)</A>
+		<LI><A HREF="#int_hip_xml_valid_">int = $hip -&gt; xml_valid ()</A>
+	</UL>
+
+	<LI><A HREF="#Methods_of_Net_Webdav_Lock">Methods of Net::Webdav::Lock</A>
+	<UL>
+
+		<LI><A HREF="#_davlock_davlock_copy_">$davlock = $davlock -&gt; copy ()</A>
+		<LI><A HREF="#_davlock_free_">$davlock -&gt; free ()</A>
+	</UL>
+
+	<LI><A HREF="#Methods_of_Net_Webdav_LockSess">Methods of Net::Webdav::LockSession</A>
+	<UL>
+
+		<LI><A HREF="#_davlocksession_add_davlock">$davlocksession -&gt; add ($davlock)</A>
+		<LI><A HREF="#_davlock_davlocksession_fi">$davlock = $davlocksession -&gt; find (uri)</A>
+		<LI><A HREF="#int_davlocksession_iterate">int = $davlocksession -&gt; iterate (func)</A>
+		<LI><A HREF="#_davlocksession_remove_davl">$davlocksession -&gt; remove ($davlock)</A>
+	</UL>
+
+	<LI><A HREF="#Methods_of_Net_Webdav_MD5">Methods of Net::Webdav::MD5</A>
+	<UL>
+
+		<LI><A HREF="#void_md5ctx_finish_ctx_">void * = $md5ctx -&gt; finish_ctx (resbuf)</A>
+		<LI><A HREF="#_md5ctx_init_ctx_">$md5ctx -&gt; init_ctx ()</A>
+	</UL>
+
+	<LI><A HREF="#Methods_of_Net_Webdav_MultiSta">Methods of Net::Webdav::MultiStatus</A>
+	<UL>
+
+		<LI><A HREF="#_multstatus_destroy_">$multstatus -&gt; destroy ()</A>
+		<LI><A HREF="#void_multstatus_get_curr">void * = $multstatus -&gt; get_current_propstat ()</A>
+		<LI><A HREF="#void_multstatus_get_curr">void * = $multstatus -&gt; get_current_response ()</A>
+		<LI><A HREF="#_multstatus_ignore_unknown_">$multstatus -&gt; ignore_unknown ()</A>
+		<LI><A HREF="#_multstatus_set_propstat_hand">$multstatus -&gt; set_propstat_handlers (start,end)</A>
+		<LI><A HREF="#_multstatus_set_response_hand">$multstatus -&gt; set_response_handlers (start,end)</A>
+	</UL>
+
+	<LI><A HREF="#Methods_of_Net_Webdav_Propfind">Methods of Net::Webdav::Propfind</A>
+	<UL>
+
+		<LI><A HREF="#int_propfind_allprop_resu">int = $propfind -&gt; allprop (result)</A>
+		<LI><A HREF="#void_propfind_current_pr">void * = $propfind -&gt; current_private ()</A>
+		<LI><A HREF="#_propfind_destroy_">$propfind -&gt; destroy ()</A>
+		<LI><A HREF="#_hip_propfind_get_parser_">$hip = $propfind -&gt; get_parser ()</A>
+		<LI><A HREF="#_request_propfind_get_requ">$request = $propfind -&gt; get_request ()</A>
+		<LI><A HREF="#int_propfind_named_prop_r">int = $propfind -&gt; named (prop,result)</A>
+		<LI><A HREF="#_propfind_set_private_creato">$propfind -&gt; set_private (creator,userdata)</A>
+	</UL>
+
+	<LI><A HREF="#Methods_of_Net_Webdav_Propset">Methods of Net::Webdav::Propset</A>
+	<UL>
+
+		<LI><A HREF="#int_propset_iterate_itera">int = $propset -&gt; iterate (iterator)</A>
+		<LI><A HREF="#const_char_propset_lang_">const char * = $propset -&gt; lang (pname)</A>
+		<LI><A HREF="#void_propset_private_">void * = $propset -&gt; private ()</A>
+		<LI><A HREF="#const_http_status_propset_">const http_status * = $propset -&gt; status (propname)</A>
+		<LI><A HREF="#const_char_propset_value">const char * = $propset -&gt; value (propname)</A>
+	</UL>
+
+	<LI><A HREF="#Methods_of_Net_Webdav_Request">Methods of Net::Webdav::Request</A>
+	<UL>
+
+		<LI><A HREF="#_request_add_request_header_">$request -&gt; add_request_header (name,value)</A>
+		<LI><A HREF="#_request_add_response_body_re">$request -&gt; add_response_body_reader (accpt,rdr)</A>
+		<LI><A HREF="#_request_add_response_header_">$request -&gt; add_response_header_catcher (hdl)</A>
+		<LI><A HREF="#_request_add_response_header_">$request -&gt; add_response_header_handler (name,hdl)</A>
+		<LI><A HREF="#int_request_begin_request_">int = $request -&gt; begin_request ()</A>
+		<LI><A HREF="#_request_dav_add_depth_header">$request -&gt; dav_add_depth_header (depth)</A>
+		<LI><A HREF="#_request_dav_lock_using_paren">$request -&gt; dav_lock_using_parent (uri)</A>
+		<LI><A HREF="#_request_dav_lock_using_resou">$request -&gt; dav_lock_using_resource (uri,depth)</A>
+		<LI><A HREF="#int_request_end_request_">int = $request -&gt; end_request ()</A>
+		<LI><A HREF="#sbuffer_request_get_reques">sbuffer = $request -&gt; get_request_headers ()</A>
+		<LI><A HREF="#const_http_status_request_">const http_status * = $request -&gt; get_status ()</A>
+		<LI><A HREF="#ssize_t_request_read_respo">ssize_t = $request -&gt; read_response_block (buffer,buflen)</A>
+		<LI><A HREF="#_request_request_destroy_">$request -&gt; request_destroy ()</A>
+		<LI><A HREF="#int_request_request_dispat">int = $request -&gt; request_dispatch ()</A>
+		<LI><A HREF="#void_request_request_hoo">void * = $request -&gt; request_hook_private (id)</A>
+		<LI><A HREF="#_request_set_request_body_buf">$request -&gt; set_request_body_buffer (buffer,size)</A>
+		<LI><A HREF="#_request_set_request_body_pro">$request -&gt; set_request_body_provider (size,provider)</A>
+		<LI><A HREF="#int_request_set_request_bo">int = $request -&gt; set_request_body_stream (stream)</A>
+	</UL>
+
+	<LI><A HREF="#Methods_of_Net_Webdav_SSL">Methods of Net::Webdav::SSL</A>
+	<UL>
+
+		<LI><A HREF="#_ssl_destroy_ssl_context_">$ssl -&gt; destroy_ssl_context ()</A>
+		<LI><A HREF="#_ssl_disable_sslv2_">$ssl -&gt; disable_sslv2 ()</A>
+		<LI><A HREF="#_ssl_disable_sslv3_">$ssl -&gt; disable_sslv3 ()</A>
+		<LI><A HREF="#_ssl_disable_tlsv1_">$ssl -&gt; disable_tlsv1 ()</A>
+		<LI><A HREF="#_ssl_set_cert_accept_accepte">$ssl -&gt; set_cert_accept (accepter)</A>
+		<LI><A HREF="#int_ssl_set_client_cert_c">int = $ssl -&gt; set_client_cert (certfile,keyfile)</A>
+		<LI><A HREF="#_ssl_set_key_prompt_prompt_">$ssl -&gt; set_key_prompt (prompt)</A>
+	</UL>
+
+	<LI><A HREF="#Methods_of_Net_Webdav_Socket">Methods of Net::Webdav::Socket</A>
+	<UL>
+
+		<LI><A HREF="#int_socket_block_timeout_">int = $socket -&gt; block (timeout)</A>
+		<LI><A HREF="#_socket_call_progress_progre">$socket -&gt; call_progress (progress,total)</A>
+		<LI><A HREF="#int_socket_close_">int = $socket -&gt; close ()</A>
+		<LI><A HREF="#int_socket_fullread_buffe">int = $socket -&gt; fullread (buffer,buflen)</A>
+		<LI><A HREF="#int_socket_fullwrite_data">int = $socket -&gt; fullwrite (data,length)</A>
+		<LI><A HREF="#const_char_socket_get_er">const char * = $socket -&gt; get_error ()</A>
+		<LI><A HREF="#int_socket_get_fd_">int = $socket -&gt; get_fd ()</A>
+		<LI><A HREF="#const_char_socket_get_ve">const char * = $socket -&gt; get_version ()</A>
+		<LI><A HREF="#int_socket_make_secure_s">int = $socket -&gt; make_secure ($ssl)</A>
+		<LI><A HREF="#int_socket_peek_buffer_co">int = $socket -&gt; peek (buffer,count)</A>
+		<LI><A HREF="#int_socket_read_buffer_co">int = $socket -&gt; read (buffer,count)</A>
+		<LI><A HREF="#int_socket_readfile_blocke">int = $socket -&gt; readfile_blocked (length,reader)</A>
+		<LI><A HREF="#int_socket_readline_line_">int = $socket -&gt; readline (line,len)</A>
+		<LI><A HREF="#_socket_register_progress_cb">$socket -&gt; register_progress (cb)</A>
+		<LI><A HREF="#int_socket_send_string_st">int = $socket -&gt; send_string (string)</A>
+		<LI><A HREF="#int_socket_sendline_line_">int = $socket -&gt; sendline (line)</A>
+	</UL>
+
+	<LI><A HREF="#Methods_of_Net_Webdav_Util">Methods of Net::Webdav::Util</A>
+	<UL>
+
+		<LI><A HREF="#int_Net_Webdav_Util_dav_acc">int = Net::Webdav::Util::dav_accept_207 (userdata,$request,status)</A>
+		<LI><A HREF="#_hip_Net_Webdav_Util_hip_xm">$hip = Net::Webdav::Util::hip_xml_create ()</A>
+		<LI><A HREF="#Net_Webdav_Util_hip_xml_parse">Net::Webdav::Util::hip_xml_parse_v (userdata,block,len)</A>
+		<LI><A HREF="#int_Net_Webdav_Util_http_ac">int = Net::Webdav::Util::http_accept_2xx (userdata,$request,st)</A>
+		<LI><A HREF="#int_Net_Webdav_Util_http_ac">int = Net::Webdav::Util::http_accept_always (userdata,$request,st)</A>
+		<LI><A HREF="#Net_Webdav_Util_http_content_">Net::Webdav::Util::http_content_type_handler (userdata,value)</A>
+		<LI><A HREF="#time_t_Net_Webdav_Util_http">time_t = Net::Webdav::Util::http_dateparse (date)</A>
+		<LI><A HREF="#Net_Webdav_Util_http_duplicat">Net::Webdav::Util::http_duplicate_header (userdata,value)</A>
+		<LI><A HREF="#Net_Webdav_Util_http_handle_n">Net::Webdav::Util::http_handle_numeric_header (userdata,value)</A>
+		<LI><A HREF="#int_Net_Webdav_Util_http_pa">int = Net::Webdav::Util::http_parse_statusline (status_line,s)</A>
+		<LI><A HREF="#_session_Net_Webdav_Util_ht">$session = Net::Webdav::Util::http_session_create ()</A>
+		<LI><A HREF="#time_t_Net_Webdav_Util_ne_a">time_t = Net::Webdav::Util::ne_asctime_parse (date)</A>
+		<LI><A HREF="#void_Net_Webdav_Util_ne_c">void * = Net::Webdav::Util::ne_calloc (len)</A>
+		<LI><A HREF="#void_Net_Webdav_Util_ne_m">void * = Net::Webdav::Util::ne_md5_buffer (buffer,len,resblock)</A>
+		<LI><A HREF="#Net_Webdav_Util_ne_md5_proces">Net::Webdav::Util::ne_md5_process_block (buffer,len,$md5ctx)</A>
+		<LI><A HREF="#Net_Webdav_Util_ne_md5_proces">Net::Webdav::Util::ne_md5_process_bytes (buffer,len,$md5ctx)</A>
+		<LI><A HREF="#void_Net_Webdav_Util_ne_m">void * = Net::Webdav::Util::ne_md5_read_ctx (ctx,resbuf)</A>
+		<LI><A HREF="#int_Net_Webdav_Util_ne_md5_">int = Net::Webdav::Util::ne_md5_stream (stream,resblock)</A>
+		<LI><A HREF="#void_Net_Webdav_Util_ne_r">void * = Net::Webdav::Util::ne_realloc (ptr,len)</A>
+		<LI><A HREF="#time_t_Net_Webdav_Util_ne_r">time_t = Net::Webdav::Util::ne_rfc1036_parse (date)</A>
+		<LI><A HREF="#char_Net_Webdav_Util_ne_r">char * = Net::Webdav::Util::ne_rfc1123_date (anytime)</A>
+		<LI><A HREF="#time_t_Net_Webdav_Util_ne_r">time_t = Net::Webdav::Util::ne_rfc1123_parse (date)</A>
+		<LI><A HREF="#char_Net_Webdav_Util_ne_s">char * = Net::Webdav::Util::ne_strdup (s)</A>
+		<LI><A HREF="#char_Net_Webdav_Util_ne_s">char * = Net::Webdav::Util::ne_strndup (s,n)</A>
+		<LI><A HREF="#char_Net_Webdav_Util_ne_u">char * = Net::Webdav::Util::ne_utf8_decode (str)</A>
+		<LI><A HREF="#char_Net_Webdav_Util_ne_u">char * = Net::Webdav::Util::ne_utf8_encode (str)</A>
+		<LI><A HREF="#Net_Webdav_Util_neon_debug_in">Net::Webdav::Util::neon_debug_init (stream,mask)</A>
+		<LI><A HREF="#Net_Webdav_Util_neon_i18n_ini">Net::Webdav::Util::neon_i18n_init ()</A>
+		<LI><A HREF="#int_Net_Webdav_Util_neon_ve">int = Net::Webdav::Util::neon_version_minimum (major,minor)</A>
+		<LI><A HREF="#const_char_Net_Webdav_Util">const char * = Net::Webdav::Util::neon_version_string ()</A>
+		<LI><A HREF="#Net_Webdav_Util_sbuffer_alter">Net::Webdav::Util::sbuffer_altered (buf)</A>
+		<LI><A HREF="#int_Net_Webdav_Util_sbuffer">int = Net::Webdav::Util::sbuffer_append (buf,data,len)</A>
+		<LI><A HREF="#Net_Webdav_Util_sbuffer_clear">Net::Webdav::Util::sbuffer_clear (buf)</A>
+		<LI><A HREF="#sbuffer_Net_Webdav_Util_sbu">sbuffer = Net::Webdav::Util::sbuffer_create ()</A>
+		<LI><A HREF="#sbuffer_Net_Webdav_Util_sbu">sbuffer = Net::Webdav::Util::sbuffer_create_sized (size)</A>
+		<LI><A HREF="#char_Net_Webdav_Util_sbuf">char * = Net::Webdav::Util::sbuffer_data (buf)</A>
+		<LI><A HREF="#Net_Webdav_Util_sbuffer_destr">Net::Webdav::Util::sbuffer_destroy (buf)</A>
+		<LI><A HREF="#char_Net_Webdav_Util_sbuf">char * = Net::Webdav::Util::sbuffer_finish (buf)</A>
+		<LI><A HREF="#int_Net_Webdav_Util_sbuffer">int = Net::Webdav::Util::sbuffer_grow (buf,size)</A>
+		<LI><A HREF="#int_Net_Webdav_Util_sbuffer">int = Net::Webdav::Util::sbuffer_size (buf)</A>
+		<LI><A HREF="#int_Net_Webdav_Util_sbuffer">int = Net::Webdav::Util::sbuffer_zappend (buf,str)</A>
+		<LI><A HREF="#_socket_Net_Webdav_Util_soc">$socket = Net::Webdav::Util::sock_accept (listener)</A>
+		<LI><A HREF="#_ssl_Net_Webdav_Util_sock_c">$ssl = Net::Webdav::Util::sock_create_ssl_context ()</A>
+		<LI><A HREF="#Net_Webdav_Util_sock_exit_">Net::Webdav::Util::sock_exit ()</A>
+		<LI><A HREF="#int_Net_Webdav_Util_sock_in">int = Net::Webdav::Util::sock_init ()</A>
+		<LI><A HREF="#int_Net_Webdav_Util_sock_na">int = Net::Webdav::Util::sock_name_lookup (hostname,addr)</A>
+		<LI><A HREF="#int_Net_Webdav_Util_sock_se">int = Net::Webdav::Util::sock_service_lookup (name)</A>
+		<LI><A HREF="#int_Net_Webdav_Util_sock_tr">int = Net::Webdav::Util::sock_transfer (fd,$socket,readlen)</A>
+		<LI><A HREF="#char_Net_Webdav_Util_uri_">char * = Net::Webdav::Util::uri_absolute (uri,scheme,hostport)</A>
+		<LI><A HREF="#const_char_Net_Webdav_Util">const char * = Net::Webdav::Util::uri_abspath (uri)</A>
+		<LI><A HREF="#char_Net_Webdav_Util_uri_">char * = Net::Webdav::Util::uri_abspath_escape (abs_path)</A>
+		<LI><A HREF="#int_Net_Webdav_Util_uri_chi">int = Net::Webdav::Util::uri_childof (parent,child)</A>
+		<LI><A HREF="#int_Net_Webdav_Util_uri_com">int = Net::Webdav::Util::uri_compare (a,b)</A>
+		<LI><A HREF="#Net_Webdav_Util_uri_free_par">Net::Webdav::Util::uri_free (parsed)</A>
+		<LI><A HREF="#int_Net_Webdav_Util_uri_has">int = Net::Webdav::Util::uri_has_trailing_slash (uri)</A>
+		<LI><A HREF="#char_Net_Webdav_Util_uri_">char * = Net::Webdav::Util::uri_parent (path)</A>
+		<LI><A HREF="#int_Net_Webdav_Util_uri_par">int = Net::Webdav::Util::uri_parse (uri,parsed,defaults)</A>
+		<LI><A HREF="#char_Net_Webdav_Util_uri_">char * = Net::Webdav::Util::uri_unescape (uri)</A>
+	</UL>
+
+	<LI><A HREF="#Constants">Constants</A>
+	<LI><A HREF="#SUPPORT">SUPPORT</A>
+	<LI><A HREF="#COPYRIGHT">COPYRIGHT</A>
+	<LI><A HREF="#AUTHOR">AUTHOR</A>
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+Net::Webdav - Perl interface to Neon HTTP and WebDAV client library
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+<PRE>  use Net::Webdav ;
+</PRE>
+<P>
+<PRE>  $sess = Net::Webdav -&gt; new ;
+  $sess -&gt; server (&quot;www.ecos.de&quot;, 80) ;
+  $sess -&gt; get (&quot;/&quot;, STDOUT) ;
+</PRE>
+<P>
+<PRE>  $sess -&gt; put (&quot;/dav/foo.htm&quot;, STDIN) ;
+</PRE>
+<P>
+<PRE>  # remove property 'test3'
+  # set value of property 'test' to 'bar'
+  @props = (
+    { name =&gt; {nspace =&gt; 'DAV:', name =&gt; 'test3'}, type =&gt; 1},
+    { name =&gt; {nspace =&gt; 'DAV:', name =&gt; 'test'}, value =&gt; 'bar'},
+    ) ;
+</PRE>
+<P>
+<PRE>  $sess -&gt; dav_proppatch (&quot;/dav/foo.htm&quot;, \@props) ;
+</PRE>
+<P>
+<PRE>  sub iterator
+    {
+    my ($userdata, $propname, $propvalue, $propstatus) = @_ ;
+</PRE>
+<P>
+<PRE>    print &quot;propfind userdata = $userdata  nspace = $propname-&gt;{nspace}  name = $propname-&gt;{name}  value = $propvalue\n&quot; ;
+    
+    return 0 ;
+    }
+</PRE>
+<P>
+<PRE>  sub callback
+    {
+    my ($userdata, $href, $results) = @_ ;
+</PRE>
+<P>
+<PRE>    print &quot;propfind callback userdata = $userdata  href = $href\n&quot; ;
+</PRE>
+<P>
+<PRE>    $results -&gt; iterate (\&amp;iterator) ;
+    }
+</PRE>
+<P>
+<PRE>  $sess -&gt; dav_simple_propfind (&quot;/dav&quot;, DAV_DEPTH_ONE, undef, \&amp;callback) ;
+</PRE>
+<P>
+<PRE>  print &quot;Status: &quot;, $sess -&gt; get_error , &quot;\n&quot; ;
+</PRE>
+<P>
+<HR>
+<H1><A NAME="DESCRIPTION">DESCRIPTION</A></H1>
+<P>
+This is the Perl interface to the neon HTTP and WebDAV client library. Most
+of the documentation is automaticly generated from the C header files of
+neon. So it looks a little bit C-ish, but is better than nothing. See also
+the examples in the <STRONG>eg</STRONG> directory. If you not sure how it works consult the neon include files.
+
+<P>
+This document describes the function that are availabe.
+Net::Webdav::Constants includes the constants defined by neon.
+
+<P>
+The neon API is encapsultated in a number of Perl classes. Everything that
+doesn't fit in a class has gone to Net::Webdav::Util. (Maybe some of these
+function will move to other classes in the future)
+
+<P>
+The clases are
+
+<DL>
+<DT><STRONG><A NAME="item_Net">Net::Webdav</A></STRONG><DD>
+Main class which holds a http session
+
+<br>&nbsp;<DT><STRONG><A NAME="item_Net">Net::Webdav::MultiStatus</A></STRONG><DD>
+Class to handle 207 responses
+
+<br>&nbsp;<DT><STRONG><A NAME="item_Net">Net::Webdav::Hip</A></STRONG><DD>
+Interface to XML parser for properties
+
+<br>&nbsp;<DT><STRONG><A NAME="item_Net">Net::Webdav::Lock</A></STRONG><DD>
+Holds a lock
+
+<br>&nbsp;<DT><STRONG><A NAME="item_Net">Net::Webdav::LockSession</A></STRONG><DD>
+Holds a lock session
+
+<br>&nbsp;<DT><STRONG><A NAME="item_Net">Net::Webdav::Propfind</A></STRONG><DD>
+Class to access the result of a PROPFIND
+
+<br>&nbsp;<DT><STRONG><A NAME="item_Net">Net::Webdav::Propset</A></STRONG><DD>
+Class to acess properties of one resource
+
+<br>&nbsp;<DT><STRONG><A NAME="item_Net">Net::Webdav::Request</A></STRONG><DD>
+Low level interface to http request
+
+<br>&nbsp;<DT><STRONG><A NAME="item_Net">Net::Webdav::MD5</A></STRONG><DD>
+MD5 checksum
+
+<br>&nbsp;<DT><STRONG><A NAME="item_Net">Net::Webdav::SSL</A></STRONG><DD>
+SSL support
+
+<br>&nbsp;<DT><STRONG><A NAME="item_Net">Net::Webdav::Socket</A></STRONG><DD>
+Low level socket access
+
+</DL>
+<P>
+WARNING: This wrapper is alpha code, while neon is around for some time and
+stable to use, not all of the interface functions provided by this Perl
+module has been tested extensivly, but most of them should work without
+problems (At least they do it for me :-).
+
+<P>
+See in the eg directory for some examples.
+
+<P>
+<HR>
+<H1><A NAME="CALLBACKS">CALLBACKS</A></H1>
+<P>
+Neon uses a lot off callbacks. Basicly there is no difference between using
+callbacks in Perl and C. The only thing that is different, is that the
+functions that sets the callbacks doesn't take the <A HREF="#item_userdata">userdata</A> argument, which is used in C to pass a pointer to the callback. Instead,
+the callback get the reference to the object that sets the callback, pass
+as the userdata argument. This object is a hashreference and you are free
+to store data in that hash. The only restriction is, that key starting with
+two underscores ('__') are reserved for Net::Webdav internal use. Example:
+
+<P>
+<PRE>  sub datehdr
+</PRE>
+<P>
+<PRE>    {
+    my ($userdata, $value) = @_ ;
+    $userdata -&gt; {date} = $value ;
+    } 
+</PRE>
+<P>
+<PRE>  $sess = Net::Webdav -&gt; new ;
+  $sess -&gt; server (&quot;www.ecos.de&quot;, 80) ;
+  $request = $sess -&gt; request_create (&quot;HEAD&quot;, &quot;/&quot;) ;
+  # install callback which gets only Date header
+  $request -&gt; add_response_header_handler ('Date', \&amp;datehdr) ;
+  $request -&gt; begin_request ;
+  $request -&gt; end_request ;
+  
+  print &quot;Date: $request-&gt;{date}\n&quot; ;
+</PRE>
+<P>
+<HR>
+<H1><A NAME="C_DATASTRUCTURS">C-DATASTRUCTURS</A></H1>
+<P>
+The C-structures that neon uses are always mapped 1:1 into a Perl hash. The
+members of the Perl hash are shown in the argument list of the function
+between { and } The function argument lists, also list the C datatype to
+which it map, so you can checkout the neon docs and include files for more
+informations.
+
+<P>
+<HR>
+<H1><A NAME="Functions">Functions</A></H1>
+<P>
+<HR>
+<H1><A NAME="Methods_of_Net_Webdav">Methods of Net::Webdav</A></H1>
+<P>
+<HR>
+<H2><A NAME="_session_add_hooks_hooks_fre">$session -&gt; add_hooks (hooks,free_cookie)</A></H2>
+<P>
+Add in hooks. 'cookie' will be passed to each call to the 'create' handler
+of the hooks. If 'free_hooks' is non-NULL, it will called when the session
+is destroyed, to free any data associated with 'cookie'.
+
+<DL>
+<DT><STRONG><A NAME="item_Arguments">Arguments</A></STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item__session">$session</A></STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG><A NAME="item_hooks">hooks</A></STRONG><DD>
+const http_request_hooks *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_Callback">Callback function: free_cookie</A></STRONG><DD>
+free_cookie (cookie)
+
+<DL>
+<DT><STRONG><A NAME="item_cookie">cookie</A></STRONG><DD>
+void *
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_dav_copy_over">int = $session -&gt; dav_copy (overwrite,src,dest)</A></H2>
+<P>
+Basic WebDAV methods: dav_copy: copy resoure from src to dest dav_move:
+move resource from src to dest -&gt; if overwrite is non-zero, the
+destination resource will be overwritten if it exists. dav_delete: delete
+resource at uri dav_mkcol: create a collection at uri (uri MUST have a
+trailing slash).
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG><A NAME="item_overwrite">overwrite</A></STRONG><DD>
+&lt;integer&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_src">src</A></STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_dest">dest</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_dav_delete_ur">int = $session -&gt; dav_delete (uri)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG><A NAME="item_uri">uri</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_dav_lock_dav">int = $session -&gt; dav_lock ($davlock)</A></H2>
+<P>
+Issue a LOCK request for the given lock. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG><A NAME="item__davlock">$davlock</A></STRONG><DD>
+struct dav_lock *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_dav_lock_disco">int = $session -&gt; dav_lock_discover (uri,result)</A></H2>
+<P>
+Perform lock discovery on the given URI. 'result' is called with the
+results (possibly &gt;1 times).  
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>Callback function: result</STRONG><DD>
+result (userdata,$davlock,uri,status)
+
+<P>
+Callback for lock discovery. If 'lock' is NULL, something went wrong
+retrieving lockdiscover for the resource, look at 'status' for the details. 
+
+<DL>
+<DT><STRONG><A NAME="item_userdata">userdata</A></STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_lock">lock</A></STRONG><DD>
+const struct dav_lock *
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_status">status</A></STRONG><DD>
+const http_status *
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_davlocksession_session_da">$davlocksession = $session -&gt; dav_lock_register ()</A></H2>
+<P>
+Register the locking hooks with an http_session. Owned locks persist for
+the duration of this session. The lock session lasts exactly as long as the
+corresponding http_session. Once you call
+<CODE>http_session_destroy(sess),</CODE> any use of the lock session has
+undefined results.  
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_dav_mkcol_uri">int = $session -&gt; dav_mkcol (uri)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_dav_move_over">int = $session -&gt; dav_move (overwrite,src,dest)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>overwrite</STRONG><DD>
+&lt;integer&gt;
+
+<br>&nbsp;<DT><STRONG>src</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>dest</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_propfind_session_dav_prop">$propfind = $session -&gt; dav_propfind_create (uri,depth)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_depth">depth</A></STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_dav_propnames_">int = $session -&gt; dav_propnames (href,depth,results)</A></H2>
+<P>
+Retrieve property names for the resources at 'href'. 'results' callback is
+called for each resource. Use 'dav_propset_iterate' on the passed results
+object to retrieve the list of property names.  
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG><A NAME="item_href">href</A></STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>depth</STRONG><DD>
+&lt;integer&gt;
+
+<br>&nbsp;<DT><STRONG>Callback function: results</STRONG><DD>
+results (userdata,href,$propset)
+
+<P>
+Callback for handling the results of fetching properties for a single
+resource (named by 'href'). The results are stored in the result set
+'results': use dav_propset_* to examine this object.  
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>href</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_results">results</A></STRONG><DD>
+const dav_prop_result_set *
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_dav_proppatch_">int = $session -&gt; dav_proppatch (uri,items)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_items">items</A></STRONG><DD>
+const dav_proppatch_operation *
+
+<P>
+items = { name =&gt; const dav_propname *, type =&gt; enum, value =&gt;
+&lt;string&gt;, };
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_dav_simple_pro">int = $session -&gt; dav_simple_propfind (uri,depth,props,results)</A></H2>
+<P>
+Fetch properties for a resource (if depth == DAV_DEPTH_ZERO), or a tree of
+resources (if depth == DAV_DEPTH_ONE or _INFINITE).
+
+<P>
+Names of the properties required must be given in 'props', or if props is
+NULL, *all* properties are fetched.
+
+<P>
+'results' is called for each resource in the response, userdata is passed
+as the first argument to the callback. It is important to note that the
+callback is called as the response is read off the socket, so don't do
+anything silly in it (e.g. <CODE>sleep(100),</CODE> or call any functions
+which use this session).
+
+<P>
+Note that if 'depth' is DAV_DEPTH_INFINITY, some servers may refuse the
+request.
+
+<P>
+Returns HTTP_*.  
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>depth</STRONG><DD>
+&lt;integer&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_props">props</A></STRONG><DD>
+const dav_propname *
+
+<P>
+props = { nspace =&gt; &lt;string&gt;, name =&gt; &lt;string&gt;, };
+
+<br>&nbsp;<DT><STRONG>Callback function: results</STRONG><DD>
+results (userdata,href,$propset)
+
+<P>
+Callback for handling the results of fetching properties for a single
+resource (named by 'href'). The results are stored in the result set
+'results': use dav_propset_* to examine this object.  
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>href</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>results</STRONG><DD>
+const dav_prop_result_set *
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_dav_simple_req">int = $session -&gt; dav_simple_request ($request)</A></H2>
+<P>
+Handle a simple WebDAV request.
+
+<P>
+Usage: 1. Create the request using <CODE>http_request_create()</CODE> 2.
+Set any headers, the request body, whatever. 3. Call dav_simple_request to
+dispatch and destroy the request.
+
+<P>
+(note the request IS destroyed by this function, don't do it yourself).
+
+<P>
+Returns HTTP_* as <CODE>http_request_dispatch()</CODE> would. If the
+response is a 207, a user-friendly error message is written to the session
+error buffer; e.g. DELETE /foo/ might give the error: /foo/bar: HTTP/1.1
+423 Locked
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG><A NAME="item__request">$request</A></STRONG><DD>
+http_req *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_dav_unlock_d">int = $session -&gt; dav_unlock ($davlock)</A></H2>
+<P>
+Issue an UNLOCK request for the given lock 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>$davlock</STRONG><DD>
+struct dav_lock *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_session_decide_proxy_use_pr">$session -&gt; decide_proxy (use_proxy)</A></H2>
+<P>
+Register the callback for determining whether the proxy server should be
+used or not here. 'userdata' will be passed as the first argument to the
+callback. The callback is only called if a proxy server has been set up
+using http_session_proxy. 
+
+<P>
+This function MUST be called before calling http_session_server.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>Callback function: use_proxy</STRONG><DD>
+int = use_proxy (userdata,scheme,hostname)
+
+<P>
+Callback to determine whether the proxy server should be used or not for a
+request to the given hostname using the given scheme. Scheme will be
+``http'' or ``https'' etc. Must return: Zero to indicate the proxy should
+NOT be used Non-zero to indicate the proxy SHOULD be used.
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_scheme">scheme</A></STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_hostname">hostname</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_destroy_">int = $session -&gt; destroy ()</A></H2>
+<P>
+Finish an HTTP session 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_session_forget_auth_">$session -&gt; forget_auth ()</A></H2>
+<P>
+Clear any stored authentication details for the given session. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_get_uri_f_">int = $session -&gt; get (uri,f)</A></H2>
+<P>
+GET resource at uri, writing response body into f 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_f">f</A></STRONG><DD>
+&lt;filehandle&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="const_char_session_get_e">const char * = $session -&gt; get_error ()</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_get_range_uri">int = $session -&gt; get_range (uri,range,f)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_range">range</A></STRONG><DD>
+http_content_range *
+
+<P>
+range = { start =&gt; &lt;integer&gt;, end =&gt; &lt;integer&gt;, total
+=&gt; &lt;integer&gt;, };
+
+<br>&nbsp;<DT><STRONG>f</STRONG><DD>
+&lt;filehandle&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="const_char_session_get_s">const char * = $session -&gt; get_scheme ()</A></H2>
+<P>
+Returns the URL scheme being used for the current session. Does NOT include
+a trailing ':'. Example returns: ``http'' or ``https''.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="const_char_session_get_s">const char * = $session -&gt; get_server_hostport ()</A></H2>
+<P>
+Returns the 'hostport' URI segment for the end-server, e.g.
+``my.server.com:8080'' or ``www.server.com'' (port segment is ommitted if
+== 80) 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_getmodtime_ur">int = $session -&gt; getmodtime (uri,modtime)</A></H2>
+<P>
+Retrieve modification time of resource at uri, place in *modtime. (uses
+HEAD) 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_modtime">modtime</A></STRONG><DD>
+time_t *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="void_session_hook_privat">void * = $session -&gt; hook_private (id)</A></H2>
+<P>
+Return private data for the session 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG><A NAME="item_id">id</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_options_uri_c">int = $session -&gt; options (uri,caps)</A></H2>
+<P>
+Determines server capabilities (using OPTIONS). Pass uri=``*'' to determine
+proxy server capabilities if using a proxy server. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_caps">caps</A></STRONG><DD>
+http_server_capabilities *
+
+<P>
+caps = { =&gt; , dav_class1 =&gt; unsigned int, dav_class2 =&gt; unsigned
+int, dav_executable =&gt; unsigned int, };
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_post_uri_f_bu">int = $session -&gt; post (uri,f,buffer)</A></H2>
+<P>
+Post using buffer as request-body: stream response into f 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>f</STRONG><DD>
+&lt;filehandle&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_buffer">buffer</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_proxy_hostnam">int = $session -&gt; proxy (hostname,port)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>hostname</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_port">port</A></STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_put_uri_f_">int = $session -&gt; put (uri,f)</A></H2>
+<P>
+PUT resource at uri, reading request body from f 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>f</STRONG><DD>
+&lt;filehandle&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_put_if_unmodif">int = $session -&gt; put_if_unmodified (uri,stream,modtime)</A></H2>
+<P>
+PUT resource at uri as above, only if it has not been modified since given
+modtime. If server is HTTP/1.1, uses If-Unmodified-Since header; guaranteed
+failure if resource is modified after 'modtime'. If server is HTTP/1.0,
+HEAD's the resource first to fetch current modtime; race condition if
+resource is modified between HEAD and PUT.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_stream">stream</A></STRONG><DD>
+&lt;filehandle&gt;
+
+<br>&nbsp;<DT><STRONG>modtime</STRONG><DD>
+time_t
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_read_file_uri">int = $session -&gt; read_file (uri,reader)</A></H2>
+<P>
+GET resource at uri, passing response body blocks to 'reader' 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>Callback function: reader</STRONG><DD>
+reader (userdata,buf,len)
+
+<P>
+The 'reader' callback type 
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_buf">buf</A></STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_len">len</A></STRONG><DD>
+size_t
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="const_char_session_redir">const char * = $session -&gt; redirect_location ()</A></H2>
+<P>
+Return location of last redirect. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_session_redirect_register_c">$session -&gt; redirect_register (confirm,notify)</A></H2>
+<P>
+Register redirect handling for the given session. Some redirect responses
+will be automatically followed. If the redirect is automatically followed,
+the 'notify' callback is called. For redirects which are NOT automatically
+followed, the 'confirm' callback is called: if this returns zero, the
+redirect is ignored.
+
+<P>
+'confirm' may be passed as NULL: in this case, only automatic redirects are
+followed. 'notify' may also be passed as NULL, automatic redirects are
+still followed.
+
+<P>
+'userdata' is passed as the first argument to the confirm and notify
+callbacks.  
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>Callback function: confirm</STRONG><DD>
+int = confirm (userdata,src,dest)
+
+<P>
+Get confirmation from the user that a redirect from URI 'src' to URI 'dest'
+is acceptable. Should return: Non-Zero to FOLLOW the redirect Zero to NOT
+follow the redirect
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>src</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>dest</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+<br>&nbsp;<DT><STRONG>Callback function: notify</STRONG><DD>
+notify (userdata,src,dest)
+
+<P>
+Notify the user that a redirect has been automatically followed from URI
+'src' to URI 'dest' 
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>src</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>dest</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_request_session_request_c">$request = $session -&gt; request_create (method,uri)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG><A NAME="item_method">method</A></STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_server_hostna">int = $session -&gt; server (hostname,port)</A></H2>
+<P>
+Set the server or proxy server to be used for the session. Returns:
+HTTP_LOOKUP if the DNS lookup for hostname failed. HTTP_OK otherwise.
+
+<P>
+Note that if a proxy is being used, http_session_proxy should be called
+BEFORE http_session_server, so the DNS lookup can be skipped on the server. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>hostname</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>port</STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_set_accept_sec">int = $session -&gt; set_accept_secure_upgrade (acc_upgrade)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG><A NAME="item_acc_upgrade">acc_upgrade</A></STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_session_set_error_errstring">$session -&gt; set_error (errstring)</A></H2>
+<P>
+Set the error string for the session 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG><A NAME="item_errstring">errstring</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_session_set_expect100_use_e">$session -&gt; set_expect100 (use_expect100)</A></H2>
+<P>
+Set protocol options for session: expect100: Defaults to OFF persist:
+Defaults to ON
+
+<P>
+expect100: When set, send the ``Expect: 100-continue'' request header with
+requests with bodies.
+
+<P>
+persist: When set, use a persistent connection. (Generally, you don't want
+to turn this off.)
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG><A NAME="item_use_expect100">use_expect100</A></STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_session_set_persist_persist">$session -&gt; set_persist (persist)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG><A NAME="item_persist">persist</A></STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_session_set_progress_progre">$session -&gt; set_progress (progress)</A></H2>
+<P>
+Set a progress callback for the session. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>Callback function: progress</STRONG><DD>
+progress (userdata,progress,total)
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_progress">progress</A></STRONG><DD>
+&lt;integer&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_total">total</A></STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_session_set_proxy_auth_call">$session -&gt; set_proxy_auth (callback)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>Callback function: callback</STRONG><DD>
+int = callback (userdata,realm,username,password)
+
+<P>
+The callback used to request the username and password in the given realm.
+The username and password must be placed in <CODE>malloc()-allocated</CODE>
+memory. Must return: 0 on success: <A HREF="#item__username">*username</A>
+and <A HREF="#item__password">*password</A> must be non-NULL, and will be
+free'd by the HTTP layer when necessary -1 to cancel (*username and <A
+HREF="#item__password">*password</A> are ignored.)
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_realm">realm</A></STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_username">username</A></STRONG><DD>
+char **
+
+<br>&nbsp;<DT><STRONG><A NAME="item_password">password</A></STRONG><DD>
+char **
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_set_request_se">int = $session -&gt; set_request_secure_upgrade (req_upgrade)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG><A NAME="item_req_upgrade">req_upgrade</A></STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_set_secure_se">int = $session -&gt; set_secure (secure)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG><A NAME="item_secure">secure</A></STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_session_set_secure_context_">$session -&gt; set_secure_context ($ssl)</A></H2>
+<P>
+Using SSL/TLS connections:
+
+<P>
+Session settings: secure: Defaults to OFF secure_context: No callbacks, any
+protocol allowed. request_secure_upgrade: Defaults to OFF
+accept_secure_ugprade: Defaults to OFF
+
+<P>
+secure_context: When set, specifies the settings to use for secure
+connections, and any callbacks (see nsocket.h). The lifetime of the context
+object must be &gt;= to the lifetime of the session object.
+
+<P>
+secure: When set, use a secure (SSL/TLS) connection to the origin server.
+This will tunnel (using CONNECT) through the proxy server if one is being
+used.
+
+<P>
+request_secure_upgrade: When set, notify the server with each request made
+that an upgrade to a secure connection is desired, if available.
+
+<P>
+accept_secure_upgrade: When set, allow a server-requested upgrade to a
+secure connection.
+
+<P>
+NB: the latter three function calls will return -1 if SSL is not supported
+by the library (i.e., it was not built against OpenSSL), or 0 if it is.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG><A NAME="item__ssl">$ssl</A></STRONG><DD>
+nssl_context *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_session_set_server_auth_cal">$session -&gt; set_server_auth (callback)</A></H2>
+<P>
+Set callbacks to handle server and proxy authentication. userdata is passed
+as the first argument to the callback. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>Callback function: callback</STRONG><DD>
+int = callback (userdata,realm,username,password)
+
+<P>
+The callback used to request the username and password in the given realm.
+The username and password must be placed in <CODE>malloc()-allocated</CODE>
+memory. Must return: 0 on success: <A HREF="#item__username">*username</A>
+and <A HREF="#item__password">*password</A> must be non-NULL, and will be
+free'd by the HTTP layer when necessary -1 to cancel (*username and <A
+HREF="#item__password">*password</A> are ignored.)
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>realm</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>username</STRONG><DD>
+char **
+
+<br>&nbsp;<DT><STRONG>password</STRONG><DD>
+char **
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_session_set_status_status_">$session -&gt; set_status (status)</A></H2>
+<P>
+Set a status notification callback for the session, to report connection
+status. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG>Callback function: status</STRONG><DD>
+status (userdata,status,info)
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>status</STRONG><DD>
+http_conn_status
+
+<br>&nbsp;<DT><STRONG><A NAME="item_info">info</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_session_set_useragent_produ">$session -&gt; set_useragent (product)</A></H2>
+<P>
+Sets the user-agent string. neon/VERSION will be appended, to make the full
+header ``User-Agent: product neon/VERSION''. If this function is not
+called, the User-Agent header is not sent. The product string must follow
+the RFC2616 format, i.e. product = token [``/'' product-version]
+product-version = token where token is any alpha-numeric-y string
+[a-zA-Z0-9]*
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+<br>&nbsp;<DT><STRONG><A NAME="item_product">product</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_session_version_pre_ht">int = $session -&gt; version_pre_http11 ()</A></H2>
+<P>
+Determine if next-hop server claims HTTP/1.1 compliance. Returns: 0 if
+next-hop server does NOT claim HTTP/1.1 compliance non-zero if next-hop
+server DOES claim HTTP/1.1 compliance Not that the ``next-hop'' server is
+the proxy server if one is being used, otherwise, the origin server.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$session</STRONG><DD>
+http_session *
+
+<P>
+**** Session Handling *****
+
+</DL>
+</DL>
+<P>
+<HR>
+<H1><A NAME="Methods_of_Net_Webdav_Hip">Methods of Net::Webdav::Hip</A></H1>
+<P>
+<HR>
+<H2><A NAME="_multstatus_hip_dav_207_cr">$multstatus = $hip -&gt; dav_207_create ()</A></H2>
+<P>
+Create a 207 parser 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item__hip">$hip</A></STRONG><DD>
+hip_xml_parser *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_hip_xml_currentline_">int = $hip -&gt; xml_currentline ()</A></H2>
+<P>
+Return current parse line for errors 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$hip</STRONG><DD>
+hip_xml_parser *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_hip_xml_destroy_">$hip -&gt; xml_destroy ()</A></H2>
+<P>
+Destroys the parser. Any operations on it then have undefined results. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$hip</STRONG><DD>
+hip_xml_parser *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="const_char_hip_xml_get_e">const char * = $hip -&gt; xml_get_error ()</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$hip</STRONG><DD>
+hip_xml_parser *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_hip_xml_parse_block_len_">$hip -&gt; xml_parse (block,len)</A></H2>
+<P>
+Parse the given block of input of length len. Block does not need to be
+NULL-terminated. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$hip</STRONG><DD>
+hip_xml_parser *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_block">block</A></STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>len</STRONG><DD>
+size_t
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_hip_xml_push_handler_elemen">$hip -&gt; xml_push_handler (elements,validate_cb,startelm_cb,endelm_cb)</A></H2>
+<P>
+Push a handler onto the handler stack for the given list of elements.
+elements must be an array, with the last element .nspace being NULL.
+Callbacks are called in order: 1. validate_cb 2. startelm_cb 3. endelm_cb
+(then back to the beginning again). If any of the callbacks ever return
+non-zero, the parse will STOP. userdata is passed as the first argument to
+startelm_cb and endelm_cb.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$hip</STRONG><DD>
+hip_xml_parser *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_elements">elements</A></STRONG><DD>
+const struct hip_xml_elm *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_validate_cb">validate_cb</A></STRONG><DD>
+hip_xml_validate_cb
+
+<P>
+Validate a new child element. 
+
+<br>&nbsp;<DT><STRONG>Callback function: startelm_cb</STRONG><DD>
+int = startelm_cb (userdata,elm,atts)
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_elm">elm</A></STRONG><DD>
+const struct hip_xml_elm *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_atts">atts</A></STRONG><DD>
+const char **
+
+</DL>
+<br>&nbsp;<DT><STRONG>Callback function: endelm_cb</STRONG><DD>
+int = endelm_cb (userdata,s,cdata)
+
+<P>
+Called when a complete element is parsed 
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_s">s</A></STRONG><DD>
+const struct hip_xml_elm *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_cdata">cdata</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_hip_xml_push_mixed_handler_">$hip -&gt; xml_push_mixed_handler (elements,validate_cb,startelm_cb,cdata_cb,endelm_cb)</A></H2>
+<P>
+Add a handler which uses a mixed-mode cdata callback 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$hip</STRONG><DD>
+hip_xml_parser *
+
+<br>&nbsp;<DT><STRONG>elements</STRONG><DD>
+const struct hip_xml_elm *
+
+<br>&nbsp;<DT><STRONG>validate_cb</STRONG><DD>
+hip_xml_validate_cb
+
+<P>
+Validate a new child element. 
+
+<br>&nbsp;<DT><STRONG>Callback function: startelm_cb</STRONG><DD>
+int = startelm_cb (userdata,elm,atts)
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>elm</STRONG><DD>
+const struct hip_xml_elm *
+
+<br>&nbsp;<DT><STRONG>atts</STRONG><DD>
+const char **
+
+</DL>
+<br>&nbsp;<DT><STRONG>Callback function: cdata_cb</STRONG><DD>
+cdata_cb (userdata,s,cdata,len)
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>s</STRONG><DD>
+const struct hip_xml_elm *
+
+<br>&nbsp;<DT><STRONG>cdata</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>len</STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+<br>&nbsp;<DT><STRONG>Callback function: endelm_cb</STRONG><DD>
+int = endelm_cb (userdata,s,cdata)
+
+<P>
+Called when a complete element is parsed 
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>s</STRONG><DD>
+const struct hip_xml_elm *
+
+<br>&nbsp;<DT><STRONG>cdata</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_hip_xml_set_error_msg_">$hip -&gt; xml_set_error (msg)</A></H2>
+<P>
+Set error message for parser 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$hip</STRONG><DD>
+hip_xml_parser *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_msg">msg</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_hip_xml_valid_">int = $hip -&gt; xml_valid ()</A></H2>
+<P>
+Returns non-zero if the parse was valid, zero if it failed (e.g., any of
+the callbacks return non-zero, the XML was not well-formed, etc). Use
+hip_xml_get_error to retrieve the error message if it failed. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$hip</STRONG><DD>
+hip_xml_parser *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H1><A NAME="Methods_of_Net_Webdav_Lock">Methods of Net::Webdav::Lock</A></H1>
+<P>
+<HR>
+<H2><A NAME="_davlock_davlock_copy_">$davlock = $davlock -&gt; copy ()</A></H2>
+<P>
+Deep-copy a lock structure. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$davlock</STRONG><DD>
+const struct dav_lock *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_davlock_free_">$davlock -&gt; free ()</A></H2>
+<P>
+Free a lock structure 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$davlock</STRONG><DD>
+struct dav_lock *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H1><A NAME="Methods_of_Net_Webdav_LockSess">Methods of Net::Webdav::LockSession</A></H1>
+<P>
+<HR>
+<H2><A NAME="_davlocksession_add_davlock">$davlocksession -&gt; add ($davlock)</A></H2>
+<P>
+Add a lock to the given session. The lock will subsequently be submitted as
+required in an If: header with any requests created using the http_session
+which the lock session is tied to. Requests indicate to the locking layer
+which locks they might need using dav_lock_using_*, as described below. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item__davlocksession">$davlocksession</A></STRONG><DD>
+dav_lock_session *
+
+<br>&nbsp;<DT><STRONG>$davlock</STRONG><DD>
+struct dav_lock *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_davlock_davlocksession_fi">$davlock = $davlocksession -&gt; find (uri)</A></H2>
+<P>
+Find a lock in the session with given URI 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$davlocksession</STRONG><DD>
+dav_lock_session *
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_davlocksession_iterate">int = $davlocksession -&gt; iterate (func)</A></H2>
+<P>
+For each lock added to the session, call func, passing the lock and the
+given userdata. Returns the number of locks. func may be pass as NULL, in
+which case, can be used to simply return number of locks in the session. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$davlocksession</STRONG><DD>
+dav_lock_session *
+
+<br>&nbsp;<DT><STRONG>Callback function: func</STRONG><DD>
+func ($davlock,userdata)
+
+<DL>
+<DT><STRONG>lock</STRONG><DD>
+struct dav_lock *
+
+<br>&nbsp;<DT><STRONG>userdata</STRONG><DD>
+void *
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_davlocksession_remove_davl">$davlocksession -&gt; remove ($davlock)</A></H2>
+<P>
+Remove lock, which must have been previously added to the session using
+'dav_lock_add' above. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$davlocksession</STRONG><DD>
+dav_lock_session *
+
+<br>&nbsp;<DT><STRONG>$davlock</STRONG><DD>
+struct dav_lock *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H1><A NAME="Methods_of_Net_Webdav_MD5">Methods of Net::Webdav::MD5</A></H1>
+<P>
+<HR>
+<H2><A NAME="void_md5ctx_finish_ctx_">void * = $md5ctx -&gt; finish_ctx (resbuf)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item__md5ctx">$md5ctx</A></STRONG><DD>
+struct ne_md5_ctx *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_resbuf">resbuf</A></STRONG><DD>
+void *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_md5ctx_init_ctx_">$md5ctx -&gt; init_ctx ()</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$md5ctx</STRONG><DD>
+struct ne_md5_ctx *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H1><A NAME="Methods_of_Net_Webdav_MultiSta">Methods of Net::Webdav::MultiStatus</A></H1>
+<P>
+<HR>
+<H2><A NAME="_multstatus_destroy_">$multstatus -&gt; destroy ()</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item__multstatus">$multstatus</A></STRONG><DD>
+dav_207_parser *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="void_multstatus_get_curr">void * = $multstatus -&gt; get_current_propstat ()</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$multstatus</STRONG><DD>
+dav_207_parser *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="void_multstatus_get_curr">void * = $multstatus -&gt; get_current_response ()</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$multstatus</STRONG><DD>
+dav_207_parser *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_multstatus_ignore_unknown_">$multstatus -&gt; ignore_unknown ()</A></H2>
+<P>
+Call this as the LAST thing before beginning parsing, to install a
+catch-all handler which means all unknown XML returned in the 207 response
+is ignored gracefully.  
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$multstatus</STRONG><DD>
+dav_207_parser *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_multstatus_set_propstat_hand">$multstatus -&gt; set_propstat_handlers (start,end)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$multstatus</STRONG><DD>
+dav_207_parser *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_start">start</A></STRONG><DD>
+dav_207_start_propstat
+
+<br>&nbsp;<DT><STRONG>Callback function: end</STRONG><DD>
+end (userdata,propstat,status_line,status,description)
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_propstat">propstat</A></STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_status_line">status_line</A></STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>status</STRONG><DD>
+const http_status *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_description">description</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_multstatus_set_response_hand">$multstatus -&gt; set_response_handlers (start,end)</A></H2>
+<P>
+Set the callbacks for the parser 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$multstatus</STRONG><DD>
+dav_207_parser *
+
+<br>&nbsp;<DT><STRONG>start</STRONG><DD>
+dav_207_start_response
+
+<P>
+TODO: do we need to pass userdata to ALL of these? We could get away with
+only passing the userdata to the start_'s and relying on the caller to send
+it through as the _start return value if they need it. 
+
+<br>&nbsp;<DT><STRONG>Callback function: end</STRONG><DD>
+end (userdata,response,status_line,status,description)
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_response">response</A></STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>status_line</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>status</STRONG><DD>
+const http_status *
+
+<br>&nbsp;<DT><STRONG>description</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H1><A NAME="Methods_of_Net_Webdav_Propfind">Methods of Net::Webdav::Propfind</A></H1>
+<P>
+<HR>
+<H2><A NAME="int_propfind_allprop_resu">int = $propfind -&gt; allprop (result)</A></H2>
+<P>
+Find all properties.
+
+<P>
+Returns HTTP_*. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item__propfind">$propfind</A></STRONG><DD>
+dav_propfind_handler *
+
+<br>&nbsp;<DT><STRONG>Callback function: result</STRONG><DD>
+result (userdata,href,$propset)
+
+<P>
+Callback for handling the results of fetching properties for a single
+resource (named by 'href'). The results are stored in the result set
+'results': use dav_propset_* to examine this object.  
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>href</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>results</STRONG><DD>
+const dav_prop_result_set *
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="void_propfind_current_pr">void * = $propfind -&gt; current_private ()</A></H2>
+<P>
+Retrieve the 'private' pointer for the current propset for the given
+handler, as returned by the dav_props_create_complex callback installed
+using 'dav_propfind_set_private'. If this callback was not registered, this
+function will return NULL.  
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$propfind</STRONG><DD>
+dav_propfind_handler *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_propfind_destroy_">$propfind -&gt; destroy ()</A></H2>
+<P>
+Destroy a propfind handler after use. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$propfind</STRONG><DD>
+dav_propfind_handler *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_hip_propfind_get_parser_">$hip = $propfind -&gt; get_parser ()</A></H2>
+<P>
+Return the XML parser for the given handler (only need if you want to
+handle complex properties). 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$propfind</STRONG><DD>
+dav_propfind_handler *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_request_propfind_get_requ">$request = $propfind -&gt; get_request ()</A></H2>
+<P>
+Return the request object for the given handler. You MUST NOT use
+http_set_request_body_* on this request object. (this call is only needed
+if for instance, you want to add extra headers to the PROPFIND request).  
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$propfind</STRONG><DD>
+dav_propfind_handler *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_propfind_named_prop_r">int = $propfind -&gt; named (prop,result)</A></H2>
+<P>
+Find properties named in a call to dav_propfind_set_flat and/or
+dav_propfind_set_complex.
+
+<P>
+Returns HTTP_*. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$propfind</STRONG><DD>
+dav_propfind_handler *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_prop">prop</A></STRONG><DD>
+const dav_propname *
+
+<P>
+prop = { nspace =&gt; &lt;string&gt;, name =&gt; &lt;string&gt;, };
+
+<br>&nbsp;<DT><STRONG>Callback function: result</STRONG><DD>
+result (userdata,href,$propset)
+
+<P>
+Callback for handling the results of fetching properties for a single
+resource (named by 'href'). The results are stored in the result set
+'results': use dav_propset_* to examine this object.  
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>href</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>results</STRONG><DD>
+const dav_prop_result_set *
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_propfind_set_private_creato">$propfind -&gt; set_private (creator,userdata)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$propfind</STRONG><DD>
+dav_propfind_handler *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_creator">creator</A></STRONG><DD>
+dav_props_create_complex
+
+<P>
+A ``complex property'' has a value which is structured XML. To handle
+complex properties, you must set up and register an XML handler which will
+understand the elements which make up such properties. The handler must be
+registered with the parser returned by 'dav_propfind_get_parser'.
+
+<P>
+To store the parsed value of the property, a 'private' structure is
+allocated in each propset (i.e. one per resource). When parsing the
+property value elements, for each new resource encountered in the response,
+the 'creator' callback is called to retrieve a 'private' structure for this
+resource.
+
+<P>
+Whilst in XML element callbacks you will have registered to handle complex
+properties, you can use the 'dav_propfind_current_private' call to retrieve
+the pointer to this private structure.
+
+<P>
+To retrieve this 'private' structure from the propset in the results
+callback, simply call 'dav_propset_private'.
+
+<br>&nbsp;<DT><STRONG>userdata</STRONG><DD>
+void *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H1><A NAME="Methods_of_Net_Webdav_Propset">Methods of Net::Webdav::Propset</A></H1>
+<P>
+<HR>
+<H2><A NAME="int_propset_iterate_itera">int = $propset -&gt; iterate (iterator)</A></H2>
+<P>
+Iterate over all the properties in 'set', calling 'iterator' for each,
+passing 'userdata' as the first argument to callback.
+
+<P>
+Returns: whatever value iterator returns.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item__propset">$propset</A></STRONG><DD>
+const dav_prop_result_set *
+
+<P>
+The 'dav_simple_propfind' interface. ***
+
+<P>
+dav_simple_propfind allows you to fetch a set of properties for a single
+resource, or a tree of resources. You set the operation going by passing
+these arguments:
+
+<P>
+- the session which should be used. - the URI and the depth of the
+operation (0, 1, infinite) - the names of the properties which you want to
+fetch - a results callback, and the userdata for the callback.
+
+<P>
+For each resource found, the results callback is called, passing you two
+things along with the userdata you passed in originally:
+
+<P>
+- the URI of the resource (const char *href) - the properties results set
+(const dav_prop_result_set *results)
+
+<br>&nbsp;<DT><STRONG>Callback function: iterator</STRONG><DD>
+int = iterator (userdata,pname,value,status)
+
+<P>
+dav_propset_iterate iterates over a properties result set, calling the
+callback for each property in the set. userdata is passed as the first
+argument to the callback. value may be NULL, indicating an error occurred
+fetching this property: look at status for the error in that case.
+
+<P>
+If the iterator returns non-zero, dav_propset_iterate will return
+immediately with that value.
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_pname">pname</A></STRONG><DD>
+const dav_propname *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_value">value</A></STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>status</STRONG><DD>
+const http_status *
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="const_char_propset_lang_">const char * = $propset -&gt; lang (pname)</A></H2>
+<P>
+Return language string of property (may be NULL). 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$propset</STRONG><DD>
+const dav_prop_result_set *
+
+<P>
+The 'dav_simple_propfind' interface. ***
+
+<P>
+dav_simple_propfind allows you to fetch a set of properties for a single
+resource, or a tree of resources. You set the operation going by passing
+these arguments:
+
+<P>
+- the session which should be used. - the URI and the depth of the
+operation (0, 1, infinite) - the names of the properties which you want to
+fetch - a results callback, and the userdata for the callback.
+
+<P>
+For each resource found, the results callback is called, passing you two
+things along with the userdata you passed in originally:
+
+<P>
+- the URI of the resource (const char *href) - the properties results set
+(const dav_prop_result_set *results)
+
+<br>&nbsp;<DT><STRONG>pname</STRONG><DD>
+const dav_propname *
+
+<P>
+pname = { nspace =&gt; &lt;string&gt;, name =&gt; &lt;string&gt;, };
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="void_propset_private_">void * = $propset -&gt; private ()</A></H2>
+<P>
+Returns the private pointer for the given propset. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$propset</STRONG><DD>
+const dav_prop_result_set *
+
+<P>
+The 'dav_simple_propfind' interface. ***
+
+<P>
+dav_simple_propfind allows you to fetch a set of properties for a single
+resource, or a tree of resources. You set the operation going by passing
+these arguments:
+
+<P>
+- the session which should be used. - the URI and the depth of the
+operation (0, 1, infinite) - the names of the properties which you want to
+fetch - a results callback, and the userdata for the callback.
+
+<P>
+For each resource found, the results callback is called, passing you two
+things along with the userdata you passed in originally:
+
+<P>
+- the URI of the resource (const char *href) - the properties results set
+(const dav_prop_result_set *results)
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="const_http_status_propset_">const http_status * = $propset -&gt; status (propname)</A></H2>
+<P>
+Returns the status structure for fetching the given property on this
+resource. This function will return NULL if the server did not return the
+property (which is a server error). 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$propset</STRONG><DD>
+const dav_prop_result_set *
+
+<P>
+The 'dav_simple_propfind' interface. ***
+
+<P>
+dav_simple_propfind allows you to fetch a set of properties for a single
+resource, or a tree of resources. You set the operation going by passing
+these arguments:
+
+<P>
+- the session which should be used. - the URI and the depth of the
+operation (0, 1, infinite) - the names of the properties which you want to
+fetch - a results callback, and the userdata for the callback.
+
+<P>
+For each resource found, the results callback is called, passing you two
+things along with the userdata you passed in originally:
+
+<P>
+- the URI of the resource (const char *href) - the properties results set
+(const dav_prop_result_set *results)
+
+<br>&nbsp;<DT><STRONG><A NAME="item_propname">propname</A></STRONG><DD>
+const dav_propname *
+
+<P>
+propname = { nspace =&gt; &lt;string&gt;, name =&gt; &lt;string&gt;, };
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="const_char_propset_value">const char * = $propset -&gt; value (propname)</A></H2>
+<P>
+Get the value of a given property. Will return NULL if there was an error
+fetching this property on this resource. Call dav_propset_result to get the
+response-status if so.  
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$propset</STRONG><DD>
+const dav_prop_result_set *
+
+<P>
+The 'dav_simple_propfind' interface. ***
+
+<P>
+dav_simple_propfind allows you to fetch a set of properties for a single
+resource, or a tree of resources. You set the operation going by passing
+these arguments:
+
+<P>
+- the session which should be used. - the URI and the depth of the
+operation (0, 1, infinite) - the names of the properties which you want to
+fetch - a results callback, and the userdata for the callback.
+
+<P>
+For each resource found, the results callback is called, passing you two
+things along with the userdata you passed in originally:
+
+<P>
+- the URI of the resource (const char *href) - the properties results set
+(const dav_prop_result_set *results)
+
+<br>&nbsp;<DT><STRONG>propname</STRONG><DD>
+const dav_propname *
+
+<P>
+propname = { nspace =&gt; &lt;string&gt;, name =&gt; &lt;string&gt;, };
+
+</DL>
+</DL>
+<P>
+<HR>
+<H1><A NAME="Methods_of_Net_Webdav_Request">Methods of Net::Webdav::Request</A></H1>
+<P>
+<HR>
+<H2><A NAME="_request_add_request_header_">$request -&gt; add_request_header (name,value)</A></H2>
+<P>
+Adds a header to the request with given name and value. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_name">name</A></STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>value</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_request_add_response_body_re">$request -&gt; add_response_body_reader (accpt,rdr)</A></H2>
+<P>
+Add a response reader for the given request, with the given acceptance
+function. userdata is passed as the first argument to the acceptance +
+reader callbacks. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+<br>&nbsp;<DT><STRONG>Callback function: accpt</STRONG><DD>
+int = accpt (userdata,$request,st)
+
+<P>
+'acceptance' callback type. Return non-zero to accept the response, else
+zero to ignore it. 
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_req">req</A></STRONG><DD>
+http_req *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_st">st</A></STRONG><DD>
+http_status *
+
+</DL>
+<br>&nbsp;<DT><STRONG>Callback function: rdr</STRONG><DD>
+rdr (userdata,buf,len)
+
+<P>
+The 'reader' callback type 
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>buf</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>len</STRONG><DD>
+size_t
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_request_add_response_header_">$request -&gt; add_response_header_catcher (hdl)</A></H2>
+<P>
+Add handler which is passed ALL header values regardless of name 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+<br>&nbsp;<DT><STRONG>Callback function: hdl</STRONG><DD>
+hdl (userdata,value)
+
+<P>
+The header handler callback type 
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>value</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_request_add_response_header_">$request -&gt; add_response_header_handler (name,hdl)</A></H2>
+<P>
+Adds a response header handler for the given request. userdata is passed as
+the first argument to the header handler, and the 'value' is the header
+field value (i.e. doesn't include the ``Header-Name: '' part``).
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+<br>&nbsp;<DT><STRONG>name</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>Callback function: hdl</STRONG><DD>
+hdl (userdata,value)
+
+<P>
+The header handler callback type 
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>value</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_request_begin_request_">int = $request -&gt; begin_request ()</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_request_dav_add_depth_header">$request -&gt; dav_add_depth_header (depth)</A></H2>
+<P>
+Adds a Depth: header to a request 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+<br>&nbsp;<DT><STRONG>depth</STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_request_dav_lock_using_paren">$request -&gt; dav_lock_using_parent (uri)</A></H2>
+<P>
+Indicate that this request will modify parent collection of given URI 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_request_dav_lock_using_resou">$request -&gt; dav_lock_using_resource (uri,depth)</A></H2>
+<P>
+Indicate that this request is of depth n on given uri 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+<br>&nbsp;<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>depth</STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_request_end_request_">int = $request -&gt; end_request ()</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="sbuffer_request_get_reques">sbuffer = $request -&gt; get_request_headers ()</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="const_http_status_request_">const http_status * = $request -&gt; get_status ()</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="ssize_t_request_read_respo">ssize_t = $request -&gt; read_response_block (buffer,buflen)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+<br>&nbsp;<DT><STRONG>buffer</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_buflen">buflen</A></STRONG><DD>
+size_t
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_request_request_destroy_">$request -&gt; request_destroy ()</A></H2>
+<P>
+Destroy memory associated with request pointer 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_request_request_dispat">int = $request -&gt; request_dispatch ()</A></H2>
+<P>
+http_request_dispatch: Sends the given request, and reads the response.
+Response-Status information can be retrieve with
+<CODE>http_get_status(req).</CODE>
+
+<P>
+Returns: HTTP_OK if request sent + response read okay. HTTP_AUTH if user
+authentication failed on origin server HTTP_AUTHPROXY if user
+authentication failed on proxy server HTTP_SERVERAUTH server authentication
+failed HTTP_PROXYAUTH proxy authentication failed HTTP_CONNECT could not
+connect to server/proxy server HTTP_TIMEOUT connection timed out
+mid-request HTTP_ERROR for other errors, and <CODE>http_get_error()</CODE>
+should return a meaningful error string
+
+<P>
+NB: HTTP_AUTH and HTTP_AUTHPROXY mean that the USER supplied the wrong
+username/password. SERVER/PROXYAUTH mean that, after the server has
+accepted a valid username/password, the server/proxy did not authenticate
+the response message correctly.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="void_request_request_hoo">void * = $request -&gt; request_hook_private (id)</A></H2>
+<P>
+Return private data for a new request  
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+<br>&nbsp;<DT><STRONG>id</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_request_set_request_body_buf">$request -&gt; set_request_body_buffer (buffer,size)</A></H2>
+<P>
+'buffer' will be sent as the request body with given request. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+<br>&nbsp;<DT><STRONG>buffer</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_size">size</A></STRONG><DD>
+size_t
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_request_set_request_body_pro">$request -&gt; set_request_body_provider (size,provider)</A></H2>
+<P>
+Callback is called to provide blocks of request body. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+<br>&nbsp;<DT><STRONG>size</STRONG><DD>
+size_t
+
+<br>&nbsp;<DT><STRONG>Callback function: provider</STRONG><DD>
+size_t = provider (userdata,buffer,buflen)
+
+<P>
+Callback for providing request body blocks.
+
+<P>
+Before each time the body is provided, the callback will be called once
+with buflen == 0. The body may have to be provided &gt;1 time per request
+(for authentication retries etc.).
+
+<P>
+Must return: 0 &lt; x &lt;= buflen =&gt; buffer contains x bytes of body
+data. or 0 =&gt; ignore 'buffer' contents, end of body.
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>buffer</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>buflen</STRONG><DD>
+size_t
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_request_set_request_bo">int = $request -&gt; set_request_body_stream (stream)</A></H2>
+<P>
+Contents of stream will be sent as the request body with the given request.
+Returns: 0 on okay. non-zero if could not determine length of file.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+<br>&nbsp;<DT><STRONG>stream</STRONG><DD>
+&lt;filehandle&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H1><A NAME="Methods_of_Net_Webdav_SSL">Methods of Net::Webdav::SSL</A></H1>
+<P>
+<HR>
+<H2><A NAME="_ssl_destroy_ssl_context_">$ssl -&gt; destroy_ssl_context ()</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$ssl</STRONG><DD>
+nssl_context *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_ssl_disable_sslv2_">$ssl -&gt; disable_sslv2 ()</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$ssl</STRONG><DD>
+nssl_context *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_ssl_disable_sslv3_">$ssl -&gt; disable_sslv3 ()</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$ssl</STRONG><DD>
+nssl_context *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_ssl_disable_tlsv1_">$ssl -&gt; disable_tlsv1 ()</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$ssl</STRONG><DD>
+nssl_context *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_ssl_set_cert_accept_accepte">$ssl -&gt; set_cert_accept (accepter)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$ssl</STRONG><DD>
+nssl_context *
+
+<br>&nbsp;<DT><STRONG>Callback function: accepter</STRONG><DD>
+int = accepter (userdata,info)
+
+<P>
+Returns: 0 -&gt; User accepts the certificate non-zero -&gt; user does NOT
+accept the certificate.
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>info</STRONG><DD>
+const nssl_certificate *
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_ssl_set_client_cert_c">int = $ssl -&gt; set_client_cert (certfile,keyfile)</A></H2>
+<P>
+For PEM-encoded client certificates: use the given client certificate and
+private key file. Returns: 0 if certificate is read okay, non-zero
+otherwise.
+
+<P>
+For decoding the private key file, the callback above will be used to
+prompt for the password. If no callback has been set, then the OpenSSL
+default will be used: the prompt appears on the terminal.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$ssl</STRONG><DD>
+nssl_context *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_certfile">certfile</A></STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_keyfile">keyfile</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_ssl_set_key_prompt_prompt_">$ssl -&gt; set_key_prompt (prompt)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$ssl</STRONG><DD>
+nssl_context *
+
+<br>&nbsp;<DT><STRONG>Callback function: prompt</STRONG><DD>
+int = prompt (userdata,filename,buf,buflen)
+
+<P>
+Callback for retrieving the private key password. Filename will be the
+filename of the private key file. Must return: 0 on success. buf must be
+filled in with the password. non-zero if the user cancelled the prompt.
+
+<P>
+FIXME: this is inconsistent with the HTTP authentication callbacks.  
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_filename">filename</A></STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>buf</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>buflen</STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H1><A NAME="Methods_of_Net_Webdav_Socket">Methods of Net::Webdav::Socket</A></H1>
+<P>
+<HR>
+<H2><A NAME="int_socket_block_timeout_">int = $socket -&gt; block (timeout)</A></H2>
+<P>
+Blocks waiting for data on the given socket for the given time. Returns:
+SOCK_* on error, SOCK_TIMEOUT on no data within timeout, 0 if data arrived
+on the socket.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item__socket">$socket</A></STRONG><DD>
+nsocket *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_timeout">timeout</A></STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_socket_call_progress_progre">$socket -&gt; call_progress (progress,total)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$socket</STRONG><DD>
+nsocket *
+
+<br>&nbsp;<DT><STRONG>progress</STRONG><DD>
+&lt;integer&gt;
+
+<br>&nbsp;<DT><STRONG>total</STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_socket_close_">int = $socket -&gt; close ()</A></H2>
+<P>
+Closes the socket and frees the nsocket object. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$socket</STRONG><DD>
+nsocket *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_socket_fullread_buffe">int = $socket -&gt; fullread (buffer,buflen)</A></H2>
+<P>
+Reads a chunk of data. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$socket</STRONG><DD>
+nsocket *
+
+<br>&nbsp;<DT><STRONG>buffer</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>buflen</STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_socket_fullwrite_data">int = $socket -&gt; fullwrite (data,length)</A></H2>
+<P>
+Sends the given block of data down the nsocket 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$socket</STRONG><DD>
+nsocket *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_data">data</A></STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_length">length</A></STRONG><DD>
+size_t
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="const_char_socket_get_er">const char * = $socket -&gt; get_error ()</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$socket</STRONG><DD>
+nsocket *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_socket_get_fd_">int = $socket -&gt; get_fd ()</A></H2>
+<P>
+Returns the file descriptor used for the socket 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$socket</STRONG><DD>
+nsocket *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="const_char_socket_get_ve">const char * = $socket -&gt; get_version ()</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$socket</STRONG><DD>
+nsocket *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_socket_make_secure_s">int = $socket -&gt; make_secure ($ssl)</A></H2>
+<P>
+Ctx is OPTIONAL. If it is NULL, defaults are used. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$socket</STRONG><DD>
+nsocket *
+
+<br>&nbsp;<DT><STRONG>$ssl</STRONG><DD>
+nssl_context *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_socket_peek_buffer_co">int = $socket -&gt; peek (buffer,count)</A></H2>
+<P>
+sock_peek is <CODE>recv()</CODE> with a timeout of SOCKET_TIMEOUT. Returns:
+SOCK_* on error, 0 on no data to read (due to EOF), &gt;0 length of data
+read into buffer.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$socket</STRONG><DD>
+nsocket *
+
+<br>&nbsp;<DT><STRONG>buffer</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_count">count</A></STRONG><DD>
+size_t
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_socket_read_buffer_co">int = $socket -&gt; read (buffer,count)</A></H2>
+<P>
+sock_read is <CODE>read()</CODE> with a timeout of SOCKET_TIMEOUT. Returns:
+SOCK_* on error, 0 on no data to read (due to EOF), &gt;0 length of data
+read into buffer.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$socket</STRONG><DD>
+nsocket *
+
+<br>&nbsp;<DT><STRONG>buffer</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>count</STRONG><DD>
+size_t
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_socket_readfile_blocke">int = $socket -&gt; readfile_blocked (length,reader)</A></H2>
+<P>
+Read from socket, passing each block read to reader callback. Pass userdata
+as first argument to reader callback.
+
+<P>
+If length is -1, keep going till EOF is returned. SOCK_CLOSED is never
+returned in this case.
+
+<P>
+Otherwise, read exactly 'length' bytes. If EOF is encountered before length
+bytes have been read, and SOCK_CLOSED will be returned.
+
+<P>
+Returns: 0 on success, SOCK_* on error (SOCK_CLOSED is a special case, as
+above)
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$socket</STRONG><DD>
+nsocket *
+
+<br>&nbsp;<DT><STRONG>length</STRONG><DD>
+&lt;integer&gt;
+
+<br>&nbsp;<DT><STRONG>Callback function: reader</STRONG><DD>
+reader (userdata,buf,len)
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>buf</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>len</STRONG><DD>
+size_t
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_socket_readline_line_">int = $socket -&gt; readline (line,len)</A></H2>
+<P>
+Reads a line from given nsocket 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$socket</STRONG><DD>
+nsocket *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_line">line</A></STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>len</STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_socket_register_progress_cb">$socket -&gt; register_progress (cb)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$socket</STRONG><DD>
+nsocket *
+
+<br>&nbsp;<DT><STRONG>Callback function: cb</STRONG><DD>
+cb (userdata,progress,total)
+
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>progress</STRONG><DD>
+&lt;integer&gt;
+
+<br>&nbsp;<DT><STRONG>total</STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_socket_send_string_st">int = $socket -&gt; send_string (string)</A></H2>
+<P>
+Sends the null-terminated string down the given nsocket 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$socket</STRONG><DD>
+nsocket *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_string">string</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_socket_sendline_line_">int = $socket -&gt; sendline (line)</A></H2>
+<P>
+Sends the given line to given socket, CRLF appended 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>$socket</STRONG><DD>
+nsocket *
+
+<br>&nbsp;<DT><STRONG>line</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H1><A NAME="Methods_of_Net_Webdav_Util">Methods of Net::Webdav::Util</A></H1>
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_dav_acc">int = Net::Webdav::Util::dav_accept_207 (userdata,$request,status)</A></H2>
+<P>
+An acceptance function which only accepts 207 responses 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+<br>&nbsp;<DT><STRONG>status</STRONG><DD>
+http_status *
+
+<P>
+status = { major_version =&gt; &lt;integer&gt;, minor_version =&gt;
+&lt;integer&gt;, code =&gt; &lt;integer&gt;, klass =&gt; &lt;integer&gt;,
+reason_phrase =&gt; &lt;string&gt;, };
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_hip_Net_Webdav_Util_hip_xm">$hip = Net::Webdav::Util::hip_xml_create ()</A></H2>
+<P>
+Initialise the parser 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+
+
+<P>
+<HR>
+<H2><A NAME="Net_Webdav_Util_hip_xml_parse">Net::Webdav::Util::hip_xml_parse_v (userdata,block,len)</A></H2>
+As above, casting (hip_xml_parser *)userdata internally. (This function can
+be passed to http_add_response_body_reader) 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>block</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>len</STRONG><DD>
+size_t
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_http_ac">int = Net::Webdav::Util::http_accept_2xx (userdata,$request,st)</A></H2>
+<P>
+An 'acceptance' callback which only accepts 2xx-class responses. Ignores
+userdata. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+<br>&nbsp;<DT><STRONG>st</STRONG><DD>
+http_status *
+
+<P>
+st = { major_version =&gt; &lt;integer&gt;, minor_version =&gt;
+&lt;integer&gt;, code =&gt; &lt;integer&gt;, klass =&gt; &lt;integer&gt;,
+reason_phrase =&gt; &lt;string&gt;, };
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_http_ac">int = Net::Webdav::Util::http_accept_always (userdata,$request,st)</A></H2>
+<P>
+An acceptance callback which accepts all responses. Ignores userdata. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>$request</STRONG><DD>
+http_req *
+
+<br>&nbsp;<DT><STRONG>st</STRONG><DD>
+http_status *
+
+<P>
+st = { major_version =&gt; &lt;integer&gt;, minor_version =&gt;
+&lt;integer&gt;, code =&gt; &lt;integer&gt;, klass =&gt; &lt;integer&gt;,
+reason_phrase =&gt; &lt;string&gt;, };
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="Net_Webdav_Util_http_content_">Net::Webdav::Util::http_content_type_handler (userdata,value)</A></H2>
+<P>
+Sets (*http_content_type)userdata appropriately. Caller must free
+-&gt;value after use 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>value</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="time_t_Net_Webdav_Util_http">time_t = Net::Webdav::Util::http_dateparse (date)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item_date">date</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="Net_Webdav_Util_http_duplicat">Net::Webdav::Util::http_duplicate_header (userdata,value)</A></H2>
+<P>
+Stock header handlers: 'duplicate': *(char **)userdata =
+<CODE>strdup(value)</CODE> 'numeric': *(int *)userdata =
+<CODE>atoi(value)</CODE> e.g. int mynum;
+<CODE>http_add_response_header_handler(myreq,</CODE> ``Content-Length'',
+http_handle_numeric_handler, &amp;mynum); ... arranges mynum to be set to
+the value of the Content-Length header.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>value</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="Net_Webdav_Util_http_handle_n">Net::Webdav::Util::http_handle_numeric_header (userdata,value)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>userdata</STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>value</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_http_pa">int = Net::Webdav::Util::http_parse_statusline (status_line,s)</A></H2>
+<P>
+Parser for strings which follow the Status-Line grammar from RFC2616.
+Returns: 0 on success, <A HREF="#item__s">*s</A> will be filled in. -1 on
+parse error.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>status_line</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>s</STRONG><DD>
+http_status *
+
+<P>
+s = { major_version =&gt; &lt;integer&gt;, minor_version =&gt;
+&lt;integer&gt;, code =&gt; &lt;integer&gt;, klass =&gt; &lt;integer&gt;,
+reason_phrase =&gt; &lt;string&gt;, };
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_session_Net_Webdav_Util_ht">$session = Net::Webdav::Util::http_session_create ()</A></H2>
+<P>
+Create a new HTTP session 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+
+
+<P>
+<HR>
+<H2><A NAME="time_t_Net_Webdav_Util_ne_a">time_t = Net::Webdav::Util::ne_asctime_parse (date)</A></H2>
+Parses asctime date string 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>date</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="void_Net_Webdav_Util_ne_c">void * = Net::Webdav::Util::ne_calloc (len)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>len</STRONG><DD>
+size_t
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="void_Net_Webdav_Util_ne_m">void * = Net::Webdav::Util::ne_md5_buffer (buffer,len,resblock)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>buffer</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>len</STRONG><DD>
+size_t
+
+<br>&nbsp;<DT><STRONG><A NAME="item_resblock">resblock</A></STRONG><DD>
+void *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="Net_Webdav_Util_ne_md5_proces">Net::Webdav::Util::ne_md5_process_block (buffer,len,$md5ctx)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>buffer</STRONG><DD>
+const void *
+
+<br>&nbsp;<DT><STRONG>len</STRONG><DD>
+size_t
+
+<br>&nbsp;<DT><STRONG>$md5ctx</STRONG><DD>
+struct ne_md5_ctx *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="Net_Webdav_Util_ne_md5_proces">Net::Webdav::Util::ne_md5_process_bytes (buffer,len,$md5ctx)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>buffer</STRONG><DD>
+const void *
+
+<br>&nbsp;<DT><STRONG>len</STRONG><DD>
+size_t
+
+<br>&nbsp;<DT><STRONG>$md5ctx</STRONG><DD>
+struct ne_md5_ctx *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="void_Net_Webdav_Util_ne_m">void * = Net::Webdav::Util::ne_md5_read_ctx (ctx,resbuf)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item_ctx">ctx</A></STRONG><DD>
+const struct ne_md5_ctx *
+
+<br>&nbsp;<DT><STRONG>resbuf</STRONG><DD>
+void *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_ne_md5_">int = Net::Webdav::Util::ne_md5_stream (stream,resblock)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>stream</STRONG><DD>
+&lt;filehandle&gt;
+
+<br>&nbsp;<DT><STRONG>resblock</STRONG><DD>
+void *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="void_Net_Webdav_Util_ne_r">void * = Net::Webdav::Util::ne_realloc (ptr,len)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item_ptr">ptr</A></STRONG><DD>
+void *
+
+<br>&nbsp;<DT><STRONG>len</STRONG><DD>
+size_t
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="time_t_Net_Webdav_Util_ne_r">time_t = Net::Webdav::Util::ne_rfc1036_parse (date)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>date</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="char_Net_Webdav_Util_ne_r">char * = Net::Webdav::Util::ne_rfc1123_date (anytime)</A></H2>
+<P>
+Return current date/time in RFC1123 format 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item_anytime">anytime</A></STRONG><DD>
+time_t
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="time_t_Net_Webdav_Util_ne_r">time_t = Net::Webdav::Util::ne_rfc1123_parse (date)</A></H2>
+<P>
+Returns time from date/time in RFC1123 format 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>date</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="char_Net_Webdav_Util_ne_s">char * = Net::Webdav::Util::ne_strdup (s)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>s</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="char_Net_Webdav_Util_ne_s">char * = Net::Webdav::Util::ne_strndup (s,n)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>s</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_n">n</A></STRONG><DD>
+size_t
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="char_Net_Webdav_Util_ne_u">char * = Net::Webdav::Util::ne_utf8_decode (str)</A></H2>
+<P>
+Returns an ne_malloc-allocated UTF-8 decode copy of 'str'. Returns NULL if
+any of the characters in 'str' are non-8-bit.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item_str">str</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="char_Net_Webdav_Util_ne_u">char * = Net::Webdav::Util::ne_utf8_encode (str)</A></H2>
+<P>
+Returns an ne_malloc-allocated UTF-8 encoded copy of 'str'. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>str</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="Net_Webdav_Util_neon_debug_in">Net::Webdav::Util::neon_debug_init (stream,mask)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>stream</STRONG><DD>
+&lt;filehandle&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_mask">mask</A></STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="Net_Webdav_Util_neon_i18n_ini">Net::Webdav::Util::neon_i18n_init ()</A></H2>
+<P>
+Initialize i18n in neon 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+
+
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_neon_ve">int = Net::Webdav::Util::neon_version_minimum (major,minor)</A></H2>
+Returns non-zero if the neon API compiled in is less than major.minor. i.e.
+I am: 1.2 - <CODE>neon_version_check(1,</CODE> 3) =&gt; -1 I am: 0.10 -
+<CODE>neon_version_check(0,</CODE> 9) =&gt; 0
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item_major">major</A></STRONG><DD>
+&lt;integer&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_minor">minor</A></STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="const_char_Net_Webdav_Util">const char * = Net::Webdav::Util::neon_version_string ()</A></H2>
+<P>
+Returns a user-visible version string like: ``neon 0.2.0: Standalone build,
+OpenSSL support''
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+
+
+<P>
+<HR>
+<H2><A NAME="Net_Webdav_Util_sbuffer_alter">Net::Webdav::Util::sbuffer_altered (buf)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>buf</STRONG><DD>
+sbuffer
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_sbuffer">int = Net::Webdav::Util::sbuffer_append (buf,data,len)</A></H2>
+<P>
+Append 'len' bytes of 'data' to buf. 'data' does not need to be
+zero-terminated. The resultant string will have a zero-terminator, either
+way. Returns 0 on success, non-zero on error.  
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>buf</STRONG><DD>
+sbuffer
+
+<br>&nbsp;<DT><STRONG>data</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>len</STRONG><DD>
+size_t
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="Net_Webdav_Util_sbuffer_clear">Net::Webdav::Util::sbuffer_clear (buf)</A></H2>
+<P>
+Empties the contents of buf; makes the buffer zero-length. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>buf</STRONG><DD>
+sbuffer
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="sbuffer_Net_Webdav_Util_sbu">sbuffer = Net::Webdav::Util::sbuffer_create ()</A></H2>
+<P>
+Create a new sbuffer. Returns NULL on error 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+
+
+<P>
+<HR>
+<H2><A NAME="sbuffer_Net_Webdav_Util_sbu">sbuffer = Net::Webdav::Util::sbuffer_create_sized (size)</A></H2>
+Create a new sbuffer of given minimum size. Returns NULL on error 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>size</STRONG><DD>
+size_t
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="char_Net_Webdav_Util_sbuf">char * = Net::Webdav::Util::sbuffer_data (buf)</A></H2>
+<P>
+Returns contents of buffer at current point in time. NOTE: if the buffer is
+modified with _concat, _append etc, this value may no longer be correct. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>buf</STRONG><DD>
+sbuffer
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="Net_Webdav_Util_sbuffer_destr">Net::Webdav::Util::sbuffer_destroy (buf)</A></H2>
+<P>
+Destroys (deallocates) a buffer 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>buf</STRONG><DD>
+sbuffer
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="char_Net_Webdav_Util_sbuf">char * = Net::Webdav::Util::sbuffer_finish (buf)</A></H2>
+<P>
+Destroys a buffer, WITHOUT freeing the data, and returns the data. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>buf</STRONG><DD>
+sbuffer
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_sbuffer">int = Net::Webdav::Util::sbuffer_grow (buf,size)</A></H2>
+<P>
+Grows the sbuffer to a minimum size. Returns 0 on success, non-zero on
+error 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>buf</STRONG><DD>
+sbuffer
+
+<br>&nbsp;<DT><STRONG>size</STRONG><DD>
+size_t
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_sbuffer">int = Net::Webdav::Util::sbuffer_size (buf)</A></H2>
+<P>
+Returns size of data in buffer, equiv to
+<CODE>strlen(sbuffer_data(buf))</CODE> 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>buf</STRONG><DD>
+sbuffer
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_sbuffer">int = Net::Webdav::Util::sbuffer_zappend (buf,str)</A></H2>
+<P>
+Append a zero-terminated string 'str' to buf. Returns 0 on success,
+non-zero on error. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>buf</STRONG><DD>
+sbuffer
+
+<br>&nbsp;<DT><STRONG>str</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_socket_Net_Webdav_Util_soc">$socket = Net::Webdav::Util::sock_accept (listener)</A></H2>
+<P>
+Not as good as <CODE>accept(2),</CODE> missing parms 2+3. Addings parms 2+3
+would probably mean passing socklen_t as an int then casting internally,
+since we don't really want to autogenerate the header file to be correct
+for the build platform.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item_listener">listener</A></STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="_ssl_Net_Webdav_Util_sock_c">$ssl = Net::Webdav::Util::sock_create_ssl_context ()</A></H2>
+<P>
+Netscape's prompts on getting a certificate which it doesn't recognize the
+CA for: 1. Hey, I don't recognize the CA for this cert. 2. Here is the
+certificate: for foo signed by BLAH, using encryption level BLEE 3. Allow:
+accept for this session only, don't accept accept forever
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+
+
+<P>
+<HR>
+<H2><A NAME="Net_Webdav_Util_sock_exit_">Net::Webdav::Util::sock_exit ()</A></H2>
+Shutdown the socket library. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+
+
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_sock_in">int = Net::Webdav::Util::sock_init ()</A></H2>
+Initialize the socket library. If you don't do this, SSL WILL NOT WORK.
+Returns 0 on success, or non-zero on screwed up SSL library. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+
+
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_sock_na">int = Net::Webdav::Util::sock_name_lookup (hostname,addr)</A></H2>
+Do a name lookup on given hostname, writes the address into given address
+buffer. Return -1 on failure. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>hostname</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_addr">addr</A></STRONG><DD>
+struct in_addr *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_sock_se">int = Net::Webdav::Util::sock_service_lookup (name)</A></H2>
+<P>
+Returns the standard TCP port for the given service 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>name</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_sock_tr">int = Net::Webdav::Util::sock_transfer (fd,$socket,readlen)</A></H2>
+<P>
+Reads readlen bytes from fd and writes to socket. (Not all in one go,
+obviously). If readlen == -1, then it reads from srcfd until EOF. Returns
+number of bytes written to destfd, or SOCK_* on error.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item_fd">fd</A></STRONG><DD>
+&lt;integer&gt;
+
+<br>&nbsp;<DT><STRONG>$socket</STRONG><DD>
+nsocket *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_readlen">readlen</A></STRONG><DD>
+&lt;integer&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="char_Net_Webdav_Util_uri_">char * = Net::Webdav::Util::uri_absolute (uri,scheme,hostport)</A></H2>
+<P>
+Returns an absolute URI from a possibly-relative 'uri', using given scheme
++ hostport segment. Returns malloc-allocated string on success, or NULL on
+malloc failure. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>scheme</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_hostport">hostport</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="const_char_Net_Webdav_Util">const char * = Net::Webdav::Util::uri_abspath (uri)</A></H2>
+<P>
+Returns abspath segment in (absolute) uri 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="char_Net_Webdav_Util_uri_">char * = Net::Webdav::Util::uri_abspath_escape (abs_path)</A></H2>
+<P>
+Escapes the abspath segment of a URI. Returns malloc-allocated string on
+success, or NULL on malloc failure.
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item_abs_path">abs_path</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_uri_chi">int = Net::Webdav::Util::uri_childof (parent,child)</A></H2>
+<P>
+Returns non-zero if child is a child of parent 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item_parent">parent</A></STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_child">child</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_uri_com">int = Net::Webdav::Util::uri_compare (a,b)</A></H2>
+<P>
+Returns strcmp-like value giving comparison between a and b, ignoring
+trailing-slashes. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item_a">a</A></STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG><A NAME="item_b">b</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="Net_Webdav_Util_uri_free_par">Net::Webdav::Util::uri_free (parsed)</A></H2>
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item_parsed">parsed</A></STRONG><DD>
+struct uri *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_uri_has">int = Net::Webdav::Util::uri_has_trailing_slash (uri)</A></H2>
+<P>
+Returns non-zero if uri has a trailing slash character 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="char_Net_Webdav_Util_uri_">char * = Net::Webdav::Util::uri_parent (path)</A></H2>
+<P>
+Returns parent of path 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG><A NAME="item_path">path</A></STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="int_Net_Webdav_Util_uri_par">int = Net::Webdav::Util::uri_parse (uri,parsed,defaults)</A></H2>
+<P>
+Parse 'uri' and place parsed segments in *parsed. 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+<br>&nbsp;<DT><STRONG>parsed</STRONG><DD>
+struct uri *
+
+<br>&nbsp;<DT><STRONG><A NAME="item_defaults">defaults</A></STRONG><DD>
+const struct uri *
+
+</DL>
+</DL>
+<P>
+<HR>
+<H2><A NAME="char_Net_Webdav_Util_uri_">char * = Net::Webdav::Util::uri_unescape (uri)</A></H2>
+<P>
+Un-escapes a URI. Returns malloc-allocated URI on success, or NULL on
+failure (malloc failure or invalid %&lt;HEX&gt;&lt;HEX&gt; sequence). 
+
+<DL>
+<DT><STRONG>Arguments</STRONG><DD>
+<DL>
+<DT><STRONG>uri</STRONG><DD>
+&lt;string&gt;
+
+</DL>
+</DL>
+<P>
+<HR>
+<H1><A NAME="Constants">Constants</A></H1>
+<P>
+Constants are defined in Net::Webdav::Constants, to get them imported say
+
+<P>
+use Net::Webdav::Constants ;
+
+<DL>
+<DT><STRONG><A NAME="item_DAV_BASIC_H">DAV_BASIC_H</A></STRONG><DD>
+<DT><STRONG><A NAME="item_DAV_DEPTH_INFINITE">DAV_DEPTH_INFINITE</A></STRONG><DD>
+<DT><STRONG><A NAME="item_DAV_DEPTH_ONE">DAV_DEPTH_ONE</A></STRONG><DD>
+<DT><STRONG><A NAME="item_DAV_DEPTH_ZERO">DAV_DEPTH_ZERO</A></STRONG><DD>
+<DT><STRONG><A NAME="item_DAV_ELM_207_UNUSED">DAV_ELM_207_UNUSED</A></STRONG><DD>
+<DT><STRONG><A NAME="item_DAV_ELM_207_first">DAV_ELM_207_first</A></STRONG><DD>
+<DT><STRONG><A NAME="item_DAV_ELM_href">DAV_ELM_href</A></STRONG><DD>
+<DT><STRONG><A NAME="item_DAV_ELM_multistatus">DAV_ELM_multistatus</A></STRONG><DD>
+<DT><STRONG><A NAME="item_DAV_ELM_prop">DAV_ELM_prop</A></STRONG><DD>
+<DT><STRONG><A NAME="item_DAV_ELM_propstat">DAV_ELM_propstat</A></STRONG><DD>
+<DT><STRONG><A NAME="item_DAV_ELM_response">DAV_ELM_response</A></STRONG><DD>
+<DT><STRONG><A NAME="item_DAV_ELM_responsedescription">DAV_ELM_responsedescription</A></STRONG><DD>
+<DT><STRONG><A NAME="item_DAV_ELM_status">DAV_ELM_status</A></STRONG><DD>
+<DT><STRONG><A NAME="item_DAV_LOCKS_H">DAV_LOCKS_H</A></STRONG><DD>
+<DT><STRONG><A NAME="item_DAV_PROPS_H">DAV_PROPS_H</A></STRONG><DD>
+<DT><STRONG><A NAME="item_DAV_TIMEOUT_INFINITE">DAV_TIMEOUT_INFINITE</A></STRONG><DD>
+<DT><STRONG><A NAME="item_DAV_TIMEOUT_INVALID">DAV_TIMEOUT_INVALID</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HIP_ELM_UNUSED">HIP_ELM_UNUSED</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HIP_ELM_root">HIP_ELM_root</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HIP_ELM_unknown">HIP_ELM_unknown</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HIP_XML_CDATA">HIP_XML_CDATA</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HIP_XML_COLLECT">HIP_XML_COLLECT</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HIP_XML_DECLINE">HIP_XML_DECLINE</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HIP_XML_H">HIP_XML_H</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HIP_XML_INVALID">HIP_XML_INVALID</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HIP_XML_MIXED">HIP_XML_MIXED</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HIP_XML_UTF8DECODE">HIP_XML_UTF8DECODE</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HIP_XML_VALID">HIP_XML_VALID</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HTTP_AUTH">HTTP_AUTH</A></STRONG><DD>
+<PRE> User authentication failed on proxy 
+</PRE>
+<br>&nbsp;<DT><STRONG><A NAME="item_HTTP_AUTHPROXY">HTTP_AUTHPROXY</A></STRONG><DD>
+<PRE> User authentication failed on proxy 
+</PRE>
+<br>&nbsp;<DT><STRONG><A NAME="item_HTTP_BASIC_H">HTTP_BASIC_H</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HTTP_CONNECT">HTTP_CONNECT</A></STRONG><DD>
+<PRE> Could not connect to server 
+</PRE>
+<br>&nbsp;<DT><STRONG><A NAME="item_HTTP_ERROR">HTTP_ERROR</A></STRONG><DD>
+<PRE> Generic error; use http_get_error(session) for message 
+</PRE>
+<br>&nbsp;<DT><STRONG><A NAME="item_HTTP_FAILED">HTTP_FAILED</A></STRONG><DD>
+<PRE> The precondition failed 
+</PRE>
+<br>&nbsp;<DT><STRONG><A NAME="item_HTTP_LOOKUP">HTTP_LOOKUP</A></STRONG><DD>
+<PRE> Name lookup failed 
+</PRE>
+<br>&nbsp;<DT><STRONG><A NAME="item_HTTP_OK">HTTP_OK</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HTTP_PORT">HTTP_PORT</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HTTP_PROXYAUTH">HTTP_PROXYAUTH</A></STRONG><DD>
+<PRE> Proxy authentication failed 
+</PRE>
+<br>&nbsp;<DT><STRONG><A NAME="item_HTTP_QUOTES">HTTP_QUOTES</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HTTP_REDIRECT">HTTP_REDIRECT</A></STRONG><DD>
+<PRE> See http_redirect.h 
+</PRE>
+<br>&nbsp;<DT><STRONG><A NAME="item_HTTP_REDIRECT_H">HTTP_REDIRECT_H</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HTTP_REQUEST_H">HTTP_REQUEST_H</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HTTP_RETRY">HTTP_RETRY</A></STRONG><DD>
+<PRE> Retry request (http_end_request ONLY) 
+</PRE>
+<br>&nbsp;<DT><STRONG><A NAME="item_HTTP_SERVERAUTH">HTTP_SERVERAUTH</A></STRONG><DD>
+<PRE> Server authentication failed 
+</PRE>
+<br>&nbsp;<DT><STRONG><A NAME="item_HTTP_TIMEOUT">HTTP_TIMEOUT</A></STRONG><DD>
+<PRE> Connection timed out 
+</PRE>
+<br>&nbsp;<DT><STRONG><A NAME="item_HTTP_UTILS_H">HTTP_UTILS_H</A></STRONG><DD>
+<DT><STRONG><A NAME="item_HTTP_WHITESPACE">HTTP_WHITESPACE</A></STRONG><DD>
+</DL>
+<A HREF="http://www.webdav.org/neon/">http://www.webdav.org/neon/</A>
+
+<P>
+<HR>
+<H1><A NAME="SUPPORT">SUPPORT</A></H1>
+<P>
+For any problems, suggestion or feedback, please use the neon mailing list
+
+<P>
+post to: <A HREF="mailto:neon@webdav.org">neon@webdav.org</A> subscribe: <A
+HREF="http://mailman.webdav.org/mailman/listinfo/neon/">http://mailman.webdav.org/mailman/listinfo/neon/</A>
+
+
+<P>
+<HR>
+<H1><A NAME="COPYRIGHT">COPYRIGHT</A></H1>
+<P>
+Copyright (c) 2001 Gerald Richter / ecos gmbh (www.ecos.de)
+
+<P>
+You may distribute under the terms of either the GNU General Public License
+or the Artistic License, as specified in the Perl README file.
+
+<P>
+THIS PACKAGE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
+MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+<P>
+<HR>
+<H1><A NAME="AUTHOR">AUTHOR</A></H1>
+<P>
+Gerald Richter / ecos &lt;<A
+HREF="mailto:richter@dev.ecos.de">richter@dev.ecos.de</A>&gt;
+
+</BODY>
+
+</HTML>

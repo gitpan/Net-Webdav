@@ -1,0 +1,61 @@
+
+Net::Webdav - Perl interface to Neon HTTP and WebDAV client library
+
+Copyright (c) 2001 Gerald Richter / ecos gmbh (www.ecos.de)
+
+You may distribute under the terms of either the GNU General Public 
+License or the Artistic License, as specified in the Perl README file.
+
+THIS PACKAGE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED 
+WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF 
+MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+$Id: README,v 1.4 2001/05/23 08:37:35 richter Exp $
+
+
+This is the Perl interface to the neon HTTP and WebDAV client library.
+
+WARNING: This wrapper is alpha code, while neon is around for some time and
+stable to use, not all of the interface functions provided by this Perl module
+has been tested extensivly, but most of them should work without problems (At least
+they do it for me :-).
+
+
+For documentation see 
+
+perldoc Webdav.pod
+
+or after installation
+
+perldoc Net::Webdav
+
+Installation as usual
+
+perl Makefile.PL
+make
+make install
+
+See in the eg directory for some examples.
+
+
+Prerequisites
+
+Neon must be already installed on your computer. 
+This version requires neon 0.14.0
+
+Neon can be taken form http://www.webdav.org/neon/
+
+
+SUPPORT
+
+For any problems, suggestion or feedback, please use the neon mailing list
+
+post to:    neon@webdav.org
+subscribe:  http://mailman.webdav.org/mailman/listinfo/neon/
+
+
+AUTHOR
+
+Gerald Richter / ecos <richter@dev.ecos.de> 
+
+
